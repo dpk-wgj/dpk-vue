@@ -2,12 +2,12 @@
 	<el-row class="panel">
 		<el-col :span="24" class="panel-top">
 			<el-col :span="20" style="font-size:26px;">
-<img src="../assets/logo4.png" class="logo"> <span>AD<i style="color:#20a0ff">MIN</i>
+<img src="../assets/logo4.png" class="logo"> <span>W<i style="color:#20a0ff">GJ</i>
 </span>
 </el-col>
 <el-col :span="4" class="rightbar">
 	<el-dropdown trigger="click">
-		<span class="el-dropdown-link" style="color:#c0ccda;cursor: pointer;"><img src="../assets/user.png" class="head"> 张某某
+		<span class="el-dropdown-link" style="color:#c0ccda;cursor: pointer;"><img src="../assets/user.png" class="head"> 微公交管理员
 </span>
 <el-dropdown-menu slot="dropdown">
 	<el-dropdown-item>我的消息</el-dropdown-item>
