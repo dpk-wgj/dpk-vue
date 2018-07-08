@@ -20,8 +20,8 @@ import Page5 from './pages/nav2/Page5.vue'
 import Page6 from './pages/nav3/Page6.vue'
 import CarLocation from './pages/CarLocationInfo/CarLocation/index.vue'
 import CarTrack from './pages/CarLocationInfo/CarTrack/index.vue'
-
 import AdminInfo from './pages/AdminInfo/index.vue'
+import CarManage from './pages/CarManage/index.vue'
 
 import echarts from './pages/charts/echarts.vue'
 // start mock
@@ -50,10 +50,20 @@ const routes = [
   {
     path: '/',
     component: Home,
-    name: 'AdminInfo',
+    name: '',
+    iconCls: 'fa fa-bar-chart',
+    leaf: true,//只有一个节点
+    children: [
+      { path: '/carManage', component: CarManage, name: '车辆管理' }
+    ]
+  },
+  {
+    path: '/',
+    component: Home,
+    name: '管理用户管理',
     iconCls: 'fa fa-bar-chart',
     children: [
-      { path: '/adminInfo', component: AdminInfo, name: 'AdminInfo' }
+      { path: '/adminInfo', component: AdminInfo, name: '管理用户管理' }
     ]
   },
   //{ path: '/main', component: Main },
