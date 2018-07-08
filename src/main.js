@@ -18,13 +18,22 @@ import user from './pages/nav1/user.vue'
 import Page4 from './pages/nav2/Page4.vue'
 import Page5 from './pages/nav2/Page5.vue'
 import Page6 from './pages/nav3/Page6.vue'
-import Test from './pages/test/index.vue'
+import CarLocation from './pages/CarLocationInfo/CarLocation/index.vue'
+import CarTrack from './pages/CarLocationInfo/CarTrack/index.vue'
+
 import AdminInfo from './pages/AdminInfo/index.vue'
 
 import echarts from './pages/charts/echarts.vue'
 // start mock
 import Mock from './mock';
 // Mock.bootstrap();
+import AMap from 'vue-amap'
+Vue.use(AMap)
+AMap.initAMapApiLoader({
+  key: 'a4d5be4201b602022f2850dc370ef6f4',
+  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
+  uiVersion: '1.0.11' // 版本号
+})
 
 Vue.use(ElementUI)
 Vue.use(VueRouter)
@@ -83,10 +92,11 @@ const routes = [
   {
     path: '/',
     component: Home,
-    name: 'test',
+    name: '车辆定位',
     iconCls: 'fa fa-bar-chart',
     children: [
-      { path: '/test', component: Test, name: 'test' }
+      { path: '/CarLocation', component: CarLocation, name: '位置查询' },
+      { path: '/CarTrack', component: CarTrack, name: '历史轨迹查询' }
     ]
   },
   {
