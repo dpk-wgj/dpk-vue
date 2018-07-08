@@ -17,3 +17,22 @@ export const addUser = params => { return axios.get(`${base}/user/add`, { params
 
 // 管理员
 export const getUserInfoById = params => { return axios.get(`/api/getUserInfoById/${params.userId}`).then(res => res.data); };
+
+
+
+//车辆
+export const getCarInfoByCarId = params => { return axios.get(`/admin/car/getCarInfoByCarId/${params.carId}`).then(res => res.data); };
+
+export const updateCarInfoByCarId = params => { return axios.post(`/admin/car/updateCarInfoByCarId`, params).then(res => res.data); };
+
+export const deleteCarInfoByCarId = params => { return axios.post(`/admin/car/deleteCarInfoByCarId`, params).then(res => res.data); };
+
+export const addCarInfo = params => { return axios.post(`/admin/car/addCarInfo`, params).then(res => res.data); };
+
+export const getCarInfoByCarNumber = params => { return axios.get(`/admin/car/getCarInfoByCarNumber/${params.carNumber}`, ).then(res => res.data); };
+
+export const findCarInfoByMultiCondition = params => { return axios.post(`/admin/car/findCarInfoByMultiCondition`, params).then(res => res.data); };
+
+
+//车辆定位
+export const getAllCarLocation = () => { return axios.get(`/admin/driver/getAllCarLocation`).then(res => res.data); };

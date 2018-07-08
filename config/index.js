@@ -30,6 +30,13 @@ module.exports = {
 					'^/api': '/api'
 				}
 		  },
+		  '/admin': {
+				target: 'http://localhost:8000',
+				changeOrigin: true,
+				pathRewrite: {
+					'^/admin': '/admin'
+				}
+		  },
 		  '/public': {
 				target: 'http://localhost:8000',
 				changeOrigin: true,

@@ -79,9 +79,9 @@
 	export default {
 		data() {
 			return {
-				currentPath: '/adminInfo',
-				currentPathName: 'adminInfo',
-				currentPathNameParent: '管理员管理',
+				currentPath: '/carManage',
+				currentPathName: '车辆管理',
+				currentPathNameParent: '车辆管理',
 				form: {
 					name: '',
 					region: '',
