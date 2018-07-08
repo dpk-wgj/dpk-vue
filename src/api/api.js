@@ -13,3 +13,7 @@ export const removeUser = params => { return axios.get(`${base}/user/remove`, { 
 export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
 
 export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
+
+
+// 管理员
+export const getUserInfoById = params => { return axios.get(`/api/getUserInfoById/${params.userId}`).then(res => res.data); };

@@ -79,9 +79,9 @@
 	export default {
 		data() {
 			return {
-				currentPath: '/table',
-				currentPathName: 'Table',
-				currentPathNameParent: '导航一',
+				currentPath: '/adminInfo',
+				currentPathName: 'adminInfo',
+				currentPathNameParent: '管理员管理',
 				form: {
 					name: '',
 					region: '',
