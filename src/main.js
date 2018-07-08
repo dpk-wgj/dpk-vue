@@ -19,11 +19,12 @@ import Page4 from './pages/nav2/Page4.vue'
 import Page5 from './pages/nav2/Page5.vue'
 import Page6 from './pages/nav3/Page6.vue'
 import Test from './pages/test/index.vue'
-import echarts from './pages/charts/echarts.vue'
+import AdminInfo from './pages/AdminInfo/index.vue'
 
+import echarts from './pages/charts/echarts.vue'
 // start mock
 import Mock from './mock';
-Mock.bootstrap();
+// Mock.bootstrap();
 
 Vue.use(ElementUI)
 Vue.use(VueRouter)
@@ -36,6 +37,15 @@ const routes = [
     path: '/login',
     component: Login,
     hidden: true//不显示在导航中
+  },
+  {
+    path: '/',
+    component: Home,
+    name: 'AdminInfo',
+    iconCls: 'fa fa-bar-chart',
+    children: [
+      { path: '/adminInfo', component: AdminInfo, name: 'AdminInfo' }
+    ]
   },
   //{ path: '/main', component: Main },
   {
