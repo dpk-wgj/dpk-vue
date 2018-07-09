@@ -127,7 +127,6 @@
 					if(res.status === 1){
 						this.total = res.result.count;
 						this.cars = res.result.carInfos;
-						
 						this.listLoading = false;
 						NProgress.done();
 					}

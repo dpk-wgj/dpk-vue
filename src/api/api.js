@@ -33,6 +33,8 @@ export const getCarInfoByCarNumber = params => { return axios.get(`/admin/car/ge
 
 export const findCarInfoByMultiCondition = params => { return axios.post(`/admin/car/findCarInfoByMultiCondition`, params).then(res => res.data); };
 
+export const getDriverInfoByMultiCondition = params => { return axios.post(`/admin/driver/getDriverInfoByMultiCondition`, params).then(res => res.data); };
+
 
 //车辆定位
 export const getAllCarLocation = () => { return axios.get(`/admin/driver/getAllCarLocation`).then(res => res.data); };
