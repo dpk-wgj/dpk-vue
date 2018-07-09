@@ -23,13 +23,13 @@
 			<el-table :data="cars" highlight-current-row v-loading="listLoading" style="width: 100%;">
 				<el-table-column type="index" width="60">
 				</el-table-column>
-				<el-table-column prop="carNumber" label="车牌号" width="250" sortable>
+				<el-table-column prop="carInfo.carNumber" label="车牌号" width="250" sortable>
 				</el-table-column>
-				<el-table-column prop="carType" label="车辆类型" width="250" sortable>
+				<el-table-column prop="carInfo.carType" label="车辆类型" width="250" sortable>
 				</el-table-column>
-				<el-table-column prop="carSeat" label="座位数" width="250" sortable>
+				<el-table-column prop="carInfo.carSeat" label="座位数" width="250" sortable>
 				</el-table-column>
-				<el-table-column prop="driverName" label="司机姓名" width="250" sortable>
+				<el-table-column prop="carInfo.driverName" label="司机姓名" width="250" sortable>
 				</el-table-column>
 				<el-table-column inline-template :context="_self" label="操作" width="200">
 					<span>	
@@ -106,10 +106,6 @@
 			}
 		},
 		methods: {
-			//性别显示转换
-			formatSex: function (row, column) {
-				return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
-			},
 			handleCurrentChange(val) {
 				this.page = val;
 				this.getCars();
@@ -128,10 +124,13 @@
 				this.listLoading = true;
 				NProgress.start();
 				findCarInfoByMultiCondition(param).then((res) => {
-					this.total =100;
-					this.cars = res.result.carInfos;
-					this.listLoading = false;
-					NProgress.done();
+					if(res.status === 1){
+						this.total = res.result.count;
+						this.cars = res.result.carInfos;
+						
+						this.listLoading = false;
+						NProgress.done();
+					}
 				});
 			},
 			//删除
@@ -144,7 +143,7 @@
 					_this.listLoading = true;
 					NProgress.start();
 					let param = new FormData();
-					param.append("carId", row.carId);
+					param.append("carId", row.carInfo.carId);
 					deleteCarInfoByCarId(param).then((res) => {
 						if(res.status === 1){
 							_this.listLoading = false;
@@ -164,13 +163,14 @@
 			},
 			//显示编辑界面
 			handleEdit: function (row) {
+				console.log("row,",row)
 				this.editFormVisible = true;
 				this.editFormTtile = '编辑';
 				this.editForm.id = row.id;
-				this.editForm.carId = row.carId;
-				this.editForm.carNumber = row.carNumber;
-				this.editForm.carType = row.carType;
-				this.editForm.carSeat = row.carSeat;
+				this.editForm.carId = row.carInfo.carId;
+				this.editForm.carNumber = row.carInfo.carNumber;
+				this.editForm.carType = row.carInfo.carType;
+				this.editForm.carSeat = row.carInfo.carSeat;
 			},
 			//编辑 or 新增
 			editSubmit: function () {
@@ -243,6 +243,10 @@
 				this.editFormVisible = true;
 				this.editFormTtile = '新增';
 				this.editForm.id = 0
+				this.editForm.carId = "";
+				this.editForm.carNumber = "";
+				this.editForm.carType = "";
+				this.editForm.carSeat = 0;
 			}
 		},
 		mounted() {

@@ -66,6 +66,16 @@ const routes = [
       { path: '/adminInfo', component: AdminInfo, name: '管理用户管理' }
     ]
   },
+  {
+    path: '/',
+    component: Home,
+    name: '车辆定位',
+    iconCls: 'fa fa-bar-chart',
+    children: [
+      { path: '/CarLocation', component: CarLocation, name: '位置查询' },
+      { path: '/CarTrack', component: CarTrack, name: '历史轨迹查询' }
+    ]
+  },
   //{ path: '/main', component: Main },
   {
     path: '/',
@@ -97,16 +107,6 @@ const routes = [
     leaf: true,//只有一个节点
     children: [
       { path: '/page6', component: Page6, name: '导航三' }
-    ]
-  },
-  {
-    path: '/',
-    component: Home,
-    name: '车辆定位',
-    iconCls: 'fa fa-bar-chart',
-    children: [
-      { path: '/CarLocation', component: CarLocation, name: '位置查询' },
-      { path: '/CarTrack', component: CarTrack, name: '历史轨迹查询' }
     ]
   },
   {
