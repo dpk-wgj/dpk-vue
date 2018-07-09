@@ -42,7 +42,7 @@
 
 <!--分页-->
 <el-col :span="24" class="toolbar" style="padding-bottom:10px;">
-<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="pageParam.limit" :total="total" style="float:right;">
 </el-pagination>
 </el-col>
 
@@ -101,6 +101,11 @@
 					name: [
 						{ required: true, message: '请输入姓名', trigger: 'blur' }
 					]
+				},
+				pageParam: {
+					sort: "car_id",  
+					order: "desc",
+					limit: 10,
 				}
 
 			}
@@ -113,12 +118,13 @@
 			//获取用户列表
 			getCars() {
 				let param = {
-					sort: "car_id",  
-					order: "desc",
+					sort: this.pageParam.sort,  
+					order: this.pageParam.order,  
+					limit: this.pageParam.limit,  
 					offset: (this.page-1)*10,
-					limit: 10,
 					carInfo: {
 						carType: this.filters.carType,
+						carNumber: this.filters.carNumber
 					}
 				}
 				this.listLoading = true;

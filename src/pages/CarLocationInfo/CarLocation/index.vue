@@ -42,15 +42,6 @@ export default {
             zoom: 15,
             center: [121.5273285, 31.21515044],
             carLocList: [],
-        //   circle: {
-        //     clickable: true,
-        //     center: [121.5273225, 31.21515024],
-        //     radius: 200,
-        //     fillOpacity: 0.3,
-        //     strokeStyle: 'dashed',
-        //     fillColor: '#FFFF00',
-        //     strokeColor: '#00BFFF'
-        //   },
             carMarkers: [
                 // position: [121.5273285, 31.21515044],
                 // events: {

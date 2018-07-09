@@ -121,7 +121,14 @@ export default {
                 //对第一条线路（即索引 0）创建一个巡航器
                 var navg1 = pathSimplifierIns.createPathNavigator(0, {
                     loop: true, //循环播放
-                    speed: 1000000 //巡航速度，单位千米/小时
+                    speed: 1000000, //巡航速度，单位千米/小时
+                    pathNavigatorStyle: {
+                        width: 16,
+                        height: 32,
+                        content: PathSimplifier.Render.Canvas.getImageContent('/static/mapCar.png', onload, onerror),
+                        strokeStyle: null,
+                        fillStyle: null
+                    }
                 });
 
                 navg1.start();
@@ -152,53 +159,6 @@ export default {
         this.events = { 
             init(map) {
                 window.amap = map
-                // AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function(PathSimplifier, $) {
-
-                //     if (!PathSimplifier.supportCanvas) {
-                //         alert('当前环境不支持 Canvas！');
-                //         return;
-                //     }
-
-                //     var pathSimplifierIns = new PathSimplifier({
-                //         zIndex: 100,
-                //         //autoSetFitView:false,
-                //         map: map, //所属的地图实例
-
-                //         getPath: function(pathData, pathIndex) {
-
-                //             return pathData.path;
-                //         },
-                //         getHoverTitle: function(pathData, pathIndex, pointIndex) {
-
-                //             if (pointIndex >= 0) {
-                //                 //point 
-                //                 return pathData.name + '，点：' + pointIndex + '/' + pathData.path.length;
-                //             }
-
-                //             return pathData.name + '，点数量' + pathData.path.length;
-                //         },
-                //         renderOptions: {
-
-                //             renderAllPointsIfNumberBelow: 100 //绘制路线节点，如不需要可设置为-1
-                //         }
-                //     });
-
-                //     window.pathSimplifierIns = pathSimplifierIns;
-
-                //     //设置数据
-                //     pathSimplifierIns.setData([{
-                //         name: '路线0',
-                //         path: _this.traceArr
-                //     }]);
-
-                //     //对第一条线路（即索引 0）创建一个巡航器
-                //     var navg1 = pathSimplifierIns.createPathNavigator(0, {
-                //         loop: true, //循环播放
-                //         speed: 1000000 //巡航速度，单位千米/小时
-                //     });
-
-                //     navg1.start();
-                // });
             }
         }
     },
