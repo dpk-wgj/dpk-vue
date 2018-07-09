@@ -17,7 +17,7 @@ import Form from './pages/nav1/Form.vue'
 import user from './pages/nav1/user.vue'
 import Page4 from './pages/nav2/Page4.vue'
 import Page5 from './pages/nav2/Page5.vue'
-import Page6 from './pages/nav3/Page6.vue'
+import Page6 from './pages/DriverInfo/driver.vue'
 import CarLocation from './pages/CarLocationInfo/CarLocation/index.vue'
 import CarTrack from './pages/CarLocationInfo/CarTrack/index.vue'
 import AdminInfo from './pages/AdminInfo/index.vue'
@@ -102,11 +102,10 @@ const routes = [
   {
     path: '/',
     component: Home,
-    name: '',
+    name: '司机管理',
     iconCls: 'fa fa-address-card',
-    leaf: true,//只有一个节点
     children: [
-      { path: '/page6', component: Page6, name: '导航三' }
+      { path: '/driver', component: Page6, name: '司机管理' }
     ]
   },
   {
