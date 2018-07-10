@@ -128,7 +128,7 @@ export default {
                 }else{
                     this.$notify({
                         title: '失败',
-                        message: `未查询到车牌号 [${this.carNumber}] 信息`,
+                        message: `未查询到车牌号 [${this.carNumber}] 位置信息`,
                         type: 'error'
                     });
                 }

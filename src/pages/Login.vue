@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import { requestLogin } from '../api/api';
+  import { requestLogin ,adminLogin} from '../api/api';
   import NProgress from 'nprogress'
   export default {
     data() {
@@ -44,6 +44,15 @@
         this.$refs.ruleForm2.resetFields();
       },
       handleSubmit2(ev) {
+        let params = {
+          driverWxId: 'yjyjyjyjyjy',
+        }
+        adminLogin(params).then(res => {
+          if(res.data.status === 1){
+            this.$router.push({ path: '/adminInfo' });
+
+          }
+        })
         // var _this = this;
         // this.$refs.ruleForm2.validate((valid) => {
         //   if (valid) {
@@ -64,9 +73,9 @@
         //       } else {
         //         localStorage.setItem('user', JSON.stringify(user));
         //         if (this.$route.query.redirect) {
-                  // this.$router.push({ path: this.$route.query.redirect });
-                // } else {
-                  this.$router.push({ path: '/adminInfo' });
+        //           this.$router.push({ path: this.$route.query.redirect });
+        //         } else {
+        //           this.$router.push({ path: '/adminInfo' });
         //         }
         //       }
         //     });
