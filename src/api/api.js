@@ -25,7 +25,16 @@ export const getCarInfoByCarId = params => { return axios.get(`/admin/car/getCar
 
 export const updateCarInfoByCarId = params => { return axios.post(`/admin/car/updateCarInfoByCarId`, params).then(res => res.data); };
 
+export const updateDriverInfoByDriverId = params => { return axios.post(`/admin/driver/updateDriverInfoByDriverId`, params).then(res => res.data); };
+
 export const deleteCarInfoByCarId = params => { return axios.post(`/admin/car/deleteCarInfoByCarId`, params).then(res => res.data); };
+
+export const deleteDriverInfoByDriverId = params => { return axios.post(`/admin/driver/deleteDriverInfoByDriverId`, params).then(res => res.data); };
+
+export const importExcel = params => { return axios.post(`/admin/driver/importExcel`, params).then(res => res.data); };
+
+export const makeExcel = () => { return axios.post(`/admin/driver/makeExcel`,).then(res => res.data); };
+
 
 export const addCarInfo = params => { return axios.post(`/admin/car/addCarInfo`, params).then(res => res.data); };
 
