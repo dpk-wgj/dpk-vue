@@ -101,6 +101,12 @@
 				this.currentPathNameParent = to.matched[0].name;
 			}
 		},
+		mounted() {
+			if(!window.localStorage.getItem("token")){
+                  this.$router.push({ path: '/login' });
+
+			}
+		},
 		methods: {
 			onSubmit() {
 				console.log('submit!');

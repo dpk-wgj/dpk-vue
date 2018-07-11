@@ -4,10 +4,10 @@
 		<el-col :span="24" class="toolbar">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
-					<el-input v-model="filters.carNumber" placeholder="车牌号"></el-input>
+					<el-input v-model="filters.driverName" placeholder="司机"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-input v-model="filters.carType" placeholder="车辆类型"></el-input>
+					<el-input v-model="filters.passengerPhone" placeholder="乘客手机号"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" v-on:click="getCars">查询</el-button>
@@ -71,16 +71,16 @@
 </template>
 
 <script>
-	import util from '../../common/util'
+	import util from '../../../common/util'
 	import NProgress from 'nprogress'
-	import { findCarInfoByMultiCondition,deleteCarInfoByCarId, updateCarInfoByCarId, addCarInfo } from '../../api/api';
+	import { findCarInfoByMultiCondition,deleteCarInfoByCarId, updateCarInfoByCarId, addCarInfo } from '../../../api/api';
 
 	export default {
 		data() {
 			return {
 				filters: {
-					carType: '',
-					carNumber: ''
+					driverName: '',
+					passengerPhone: ''
 				},
 				cars: [],
 				total: 0,
@@ -133,6 +133,7 @@
 					if(res.status === 1){
 						this.total = res.result.count;
 						this.cars = res.result.carInfos;
+						
 						this.listLoading = false;
 						NProgress.done();
 					}
@@ -177,7 +178,7 @@
 				this.editForm.carType = row.carInfo.carType;
 				this.editForm.carSeat = row.carInfo.carSeat;
 			},
-			//编辑
+			//编辑 or 新增
 			editSubmit: function () {
 				var _this = this;
 
