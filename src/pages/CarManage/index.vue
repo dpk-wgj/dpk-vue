@@ -127,7 +127,6 @@
 					if(res.status === 1){
 						this.total = res.result.count;
 						this.cars = res.result.carInfos;
-						
 						this.listLoading = false;
 						NProgress.done();
 					}
@@ -172,7 +171,7 @@
 				this.editForm.carType = row.carInfo.carType;
 				this.editForm.carSeat = row.carInfo.carSeat;
 			},
-			//编辑 or 新增
+			//编辑
 			editSubmit: function () {
 				var _this = this;
 
