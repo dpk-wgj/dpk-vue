@@ -49,7 +49,7 @@
         }
         adminLogin(params).then(res => {
           if(res.data.status === 1){
-            this.$router.push({ path: '/adminInfo' });
+            this.$router.push({ path: '/' });
 
           }
         })

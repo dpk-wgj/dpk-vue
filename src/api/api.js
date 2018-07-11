@@ -61,3 +61,8 @@ export const getLocationInfoByDate = param => { return axios.post(`/admin/order/
 
 // 
 // export const getLocationInfoByDate = param => { return axios.post(`/admin/order/getLocationInfoByDate`, param).then(res => res.data); };
+
+
+//Order订单接口
+// export const getCarInfoByCarId = params => { return axios.get(`/api/driver/getOrderInfoByDriverId}`).then(res => res.data); };
+

@@ -22,6 +22,9 @@ import CarLocation from './pages/CarLocationInfo/CarLocation/index.vue'
 import CarTrack from './pages/CarLocationInfo/CarTrack/index.vue'
 import AdminInfo from './pages/AdminInfo/index.vue'
 import CarManage from './pages/CarManage/index.vue'
+import OrderList from './pages/OrderManage/OrderList/index.vue'
+import OrderComplaint from './pages/OrderManage/OrderComplaint/index.vue'
+import OrderStatistics from './pages/OrderManage/OrderStatistics/index.vue'
 
 import echarts from './pages/charts/echarts.vue'
 // start mock
@@ -55,6 +58,17 @@ const routes = [
     leaf: true,//只有一个节点
     children: [
       { path: '/carManage', component: CarManage, name: '车辆管理' }
+    ]
+  },
+  {
+    path: '/',
+    component: Home,
+    name: '订单管理',
+    iconCls: 'fa fa-bar-chart',
+    children: [
+      { path: '/order/list', component: OrderList, name: '订单检索' },
+      { path: '/order/complaint', component: OrderComplaint, name: '投诉处理' },
+      { path: '/order/statistics', component: OrderStatistics, name: '数据统计' }
     ]
   },
   {
