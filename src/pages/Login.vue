@@ -45,7 +45,8 @@
       },
       handleSubmit2(ev) {
         let params = {
-          driverWxId: 'yjyjyjyjyjy',
+          username: 'zhoulin',
+            password: '123456'
         }
         adminLogin(params).then(res => {
           if(res.data.status === 1){

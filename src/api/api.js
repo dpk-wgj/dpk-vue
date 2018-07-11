@@ -30,7 +30,7 @@ export const addUser = params => { return axios.get(`${base}/user/add`, { params
 export const getUserInfoById = params => { return axios.get(`/api/getUserInfoById/${params.userId}`).then(res => res.data); };
 
 export const adminLogin = params => { 
-    return axios.post(`/public/driver/login`, params).then(res => {
+    return axios.post(`/public/admin/login`, params).then(res => {
         let token = res.headers.refresh
         window.localStorage.setItem('token',token);
         // window.localStorage.setItem('user',JSON.stringify(res.data.result))
