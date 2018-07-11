@@ -6,9 +6,6 @@
                 <el-form-item  style="float:right">
                     <el-button type="primary" v-on:click="getExcel">导出信息表</el-button>
                 </el-form-item>
-                <el-form-item  style="float:right">
-                    <el-button type="primary" v-on:click="getExcel">导出信息表</el-button>
-                </el-form-item>
 				<el-form-item>
 				</el-form-item>
 				<el-form-item>
@@ -32,6 +29,7 @@
 				<el-form-item >
 				<el-upload
 						class="upload-demo"
+						ref="upload"
                         multiple="false"
 						action="http://localhost:8000/admin/driver/importExcel"
 						:on-preview="handlePreview"
@@ -43,10 +41,9 @@
                         :multiple="false"
 						:file-list="fileList">
 					<el-button  slot="trigger" size="small" type="primary">选择文件</el-button>
-                    <el-button  style="margin-left: 10px" size="small" type="success" @click ="submitUpload()">导入信息</el-button>
+                    <el-button  style="margin-left: 10px" size="small" type="success" @click ="submitUpload">导入信息</el-button>
 					<span slot="tip" class="el-upload__tip">只能导入Excel文件</span>
 				</el-upload>
-
 				</el-form-item>
 
 
@@ -182,8 +179,7 @@
         methods: {
 
             submitUpload: function () {
-                console.log("dsdsdasdasd")
-                this.$refs.upload.submit();
+                 this.$refs.upload.submit();
             },
             handleRemove(file, fileList) {
                 console.log(file, fileList);
@@ -197,16 +193,36 @@
             },
             beforeUpload: function (file) {
                 console.log(file)
-                //这里是重点，将文件转化为formdata数据上传
+                var testmsg = file.name.substring(file.name.lastIndexOf('.')+1)
+                const extension = testmsg === 'xls'
+                const extension2 = testmsg === 'xlsx'
+                const isLt2M = file.size / 1024 / 1024 < 10
+				if(!extension && !extension2) {
+                    this.$message({
+                        message: '上传文件只能是 xls、xlsx格式!',
+                        type: 'warning'
+                    });
+                }
+                else if(!isLt2M) {
+                    this.$message({
+                        message: '上传文件大小不能超过 10MB!',
+                        type: 'warning'
+                    });
+                }
+                else{
+                 //这里是重点，将文件转化为formdata数据上传
                 let fd = new FormData()
                 fd.append('file', file)
-                console.log("dsdsdasdasd")
                 importExcel(fd).then((res) => {
-                    console.log(res)
-
+                    this.$notify({
+                        title: '成功',
+                        message: '导入司机信息成功',
+                        type: 'success'
+                    });
+                    this.getDriver();
                 }, (res) => {
                     console.log(res)
-                });
+                });}
                 return false;
             },
 
