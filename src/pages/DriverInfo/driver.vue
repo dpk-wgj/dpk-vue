@@ -7,8 +7,6 @@
                     <el-button type="primary" v-on:click="getExcel">导出信息表</el-button>
                 </el-form-item>
 				<el-form-item>
-				</el-form-item>
-				<el-form-item>
 					<el-input v-model="filters.driverName" placeholder="姓名"></el-input>
 				</el-form-item>
 				<el-form-item>
@@ -45,8 +43,6 @@
 					<span slot="tip" class="el-upload__tip">只能导入Excel文件</span>
 				</el-upload>
 				</el-form-item>
-
-
 			</el-form>
 		</el-col>
 
@@ -64,8 +60,6 @@
 					<div style="text-algin:center;margin:auto">
 						<i v-if="scope.row.driverInfo.driverStatus==0"  style="color:#F56C6C;">休息</i>
 						<i v-else-if="scope.row.driverInfo.driverStatus==1"  style="color:#67C23A;"> 上岗</i>
-
-
 					</div>
 				</template>
 			</el-table-column>
@@ -88,15 +82,19 @@
 				</el-table-column>
 				<el-table-column prop="carInfo.carSeat" label="车座位数"  align="center"  sortable >
 				</el-table-column>
+                <el-table-column inline-template :context="_self" label="操作"   align="center">
+	             <span>
+					<el-button size="small" @click="changeCar(row)">换车</el-button>
+				</span>
+                </el-table-column>
 			</el-table-column>
 
 			<el-table-column inline-template :context="_self" label="操作"  width="180px" align="center">
 	        <span>
-					<el-button size="small" @click="handleEdit(row)">编辑</el-button>
-					<el-button type="danger" size="small" @click="handleDel(row)">删除</el-button>
-				</span>
+                <el-button size="small" @click="handleEdit(row)">编辑</el-button>
+                <el-button type="danger" size="small" @click="handleDel(row)">删除</el-button>
+            </span>
 			</el-table-column>
-
 		</el-table>
 
 			<!--分页-->
@@ -111,7 +109,6 @@
 				<el-form-item label="姓名" prop="driverName">
 					<el-input v-model="editForm.driverName" auto-complete="off"></el-input>
 				</el-form-item>
-
 				<el-form-item label="微信号"  prop="driverWxId">
 					<el-input v-model="editForm.driverWxId"  size="medium"></el-input>
 				</el-form-item>
@@ -133,12 +130,49 @@
 				<el-button type="primary" @click.native="editSubmit" :loading="editLoading">{{btnEditText}}</el-button>
 			</div>
 		</el-dialog>
+        <!--编辑换车界面-->
+        <el-dialog title="换车操作界面" v-model="editFormVisible1" :close-on-click-modal="false" width = "30%" :visible.sync="dialogVisible">
+            <el-row v-loading = "editLoading1">
+            <el-form :model="editForm1" :rules="editFormRules1" ref="editForm1" label-width="100px">
+                <el-form-item label="搜索">
+                <el-button type="primary" v-on:click="getCar">查询</el-button>
+                <el-col :span="5">
+                    <el-input v-model="carForm.carId" placeholder="请输入车辆Id" ></el-input>
+                </el-col>
+            </el-form-item>
+                <el-form-item label="车辆Id" prop="carId">
+                    <el-col :span="5">
+                    <el-input v-model="editForm1.carId"  style="width: 100%;" disabled></el-input>
+                    </el-col>
+                </el-form-item>
+                <el-form-item label="车牌号"  prop="carNumber">
+                    <el-col :span="5">
+                    <el-input v-model="editForm1.carNumber"  style="width: 100%;" disabled></el-input>
+                    </el-col>
+                </el-form-item>
+                <el-form-item label="车类型"  prop="carType">
+                    <el-col :span="5">
+                    <el-input  v-model="editForm1.carType" style="width: 100%;" disabled></el-input>
+                    </el-col>
+                </el-form-item>
+                <el-form-item label="车座位数"  prop="carSeat">
+                    <el-col :span="5">
+                    <el-input  v-model="editForm1.carSeat"style="width: 100%;" disabled></el-input>
+                    </el-col>
+                </el-form-item>
+            </el-form>
+            </el-row>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click.native="editFormVisible1 = false">取 消</el-button >
+                <el-button type="primary" @click.native="editSubmit1" :loading="editLoading1">{{btnEditText1}}</el-button>
+            </div>
+        </el-dialog>
 	</section>
 </template>
 
 <script>
     import NProgress from 'nprogress'
-    import { getDriverInfoByMultiCondition,updateDriverInfoByDriverId,deleteDriverInfoByDriverId ,importExcel,makeExcel} from '../../api/api';
+    import { getDriverInfoByMultiCondition,updateDriverInfoByDriverId,deleteDriverInfoByDriverId ,importExcel,makeExcel,getCarInfoNoCompatibleByCarId} from '../../api/api';
 
     export default {
         data() {
@@ -149,13 +183,19 @@
                     driverPhoneNumber:"",
                     driverLevelStar:""
                 },
+                carForm: {
+                    carId:""
+                },
                 driverInfo: [],
                 total: 0,
                 page: 1,
                 loading:false,
+                dialogVisible:false,
                 listLoading: false,
                 editFormVisible: false,//编辑界面显是否显示
                 editFormTtile: '编辑',//编辑界面标题
+                editFormVisible1: false,//换车界面显是否显示
+                editFormTtile1: '换车',//换车界面标题
                 //编辑界面数据
                 editForm: {
                     id: 0,
@@ -166,18 +206,33 @@
                     driverLicence:"",
                     driverLevelStar:"",
                 },
+                //换车界面数据
+                editForm1: {
+                    id: 0,
+                    driverId:"",
+                    carId:"",
+                    carNumber:"",
+                    carType:"",
+                    carSeat:"",
+                },
                 editLoading: false,
+                editLoading1: false,
+                btnEditText1: '确 定',
                 btnEditText: '提 交',
                 editFormRules: {
                     name: [
                         { required: true, message: '请输入姓名', trigger: 'blur' }
+                    ]
+                },
+                editFormRules1: {
+                    name: [
+                        { required: true, message: '请输入车辆Id', trigger: 'blur' }
                     ]
                 }
 
             }
         },
         methods: {
-
             submitUpload: function () {
                  this.$refs.upload.submit();
             },
@@ -253,6 +308,43 @@
                     }
                 });
             },
+            getCar: function () {
+                var driverId =   this.editForm1.driverId
+                this.editLoading1 = true;
+                NProgress.start();
+                if(this.carForm.carId == 0)
+                {
+                    this.editLoading1 = false;
+                    this.$notify.error({
+                    title: '查询失败！',
+                    message: "输入Id为空查询失败",
+                    type: 'error'
+                });
+                }
+                else{
+                getCarInfoNoCompatibleByCarId(this.carForm.carId)
+                    .then((res) => {
+                        if (res.status === 1) {
+                            this.editLoading1 = false;
+                            this.editForm1 = res.result;
+                            this.editForm1.driverId = driverId;
+                            // console.log( this.editForm1 );
+                            this.carForm.carId = '';
+                            NProgress.done();
+                        }
+                        else{
+                            this.editLoading1 = false;
+                            this.carForm.carId = '';
+                            this.$notify.error({
+                                title: '查询失败',
+                                message: "车辆Id不存在或者该车辆现在不支持绑定司机",
+                                type: 'error'
+                            });
+                        }
+
+                })
+                   }
+            },
             getExcel(){
                 makeExcel()
                     .then((response) => {
@@ -266,7 +358,7 @@
                     this.$notify({
                         title: '失败',
                         message: '导出信息表失败',
-                        type: 'success'
+                        type: 'error'
                     });
                 })
             },
@@ -298,7 +390,7 @@
 
                 });
             },
-            //显示编辑界面
+            //显示司机信息编辑界面
             handleEdit: function (row) {
                 console.log("row,", row)
                 this.editFormVisible = true;
@@ -312,11 +404,58 @@
                 this.editForm.driverLicence = row.driverInfo.driverLicence;
                 this.editForm.driverLevelStar = row.driverInfo.driverLevelStar;
             },
+            //显示司机信息编辑界面
+            changeCar: function (row) {
+                console.log("row,", row)
+                this.editFormVisible1 = true;
+                this.editForm1.id = row.id;
+                this.editForm1.driverId = row.driverInfo.driverId;
+                this.editForm1.carId = row.carInfo.carId;
+                this.editForm1.carNumber = row.carInfo.carNumber;
+                this.editForm1.carType = row.carInfo.carType;
+                this.editForm1.carSeat = row.carInfo.carSeat;
+            },
+            editSubmit1: function () {
+                var _this = this;
+                _this.$refs.editForm.validate((valid) => {
+                    if (valid) {
+                        _this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            _this.editLoading = true;
+                            NProgress.start();
+                            _this.btnEditText = '提交中';
+                            //编辑
+                            let param = {
+                                driverId: _this.editForm1.driverId,
+                                carId: _this.editForm1.carId
+                            };
+                            updateDriverInfoByDriverId(param).then((res) => {
+                                console.log("!!!", res)
+                                if (res.status === 1) {
+                                    _this.editLoading = false;
+                                    NProgress.done();
+                                    _this.btnEditText = '提 交';
+                                    _this.$notify({
+                                        title: '成功',
+                                        message: '提交成功',
+                                        type: 'success'
+                                    });
+                                    _this.editFormVisible = false;
+                                    _this.getDriver();
+                                }
+                            });
+
+
+                        });
+
+                    }
+                });
+
+            },
+        },
             editSubmit: function () {
                 var _this = this;
                 _this.$refs.editForm.validate((valid) => {
                     if (valid) {
-
                         _this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             _this.editLoading = true;
                             NProgress.start();
@@ -354,7 +493,7 @@
                 });
 
             },
-        },
+
         mounted() {
             this.getDriver();
         }
