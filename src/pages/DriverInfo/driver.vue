@@ -99,7 +99,7 @@
 
 			<!--分页-->
 		<el-col :span="24" class="toolbar" style="padding-bottom:10px;">
-			<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+			<el-pagination layout="total,prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="this.total" style="float:right;">
 			</el-pagination>
 		</el-col>
 
@@ -172,7 +172,7 @@
 
 <script>
     import NProgress from 'nprogress'
-    import { getDriverInfoByMultiCondition,updateDriverInfoByDriverId,deleteDriverInfoByDriverId ,importExcel,makeExcel,getCarInfoNoCompatibleByCarId} from '../../api/api';
+    import { getDriverInfoByMultiCondition,updateDriverInfoByDriverId,deleteDriverInfoByDriverId ,importExcel,makeExcel,getCarInfoNoCompatibleByCarId,changCar} from '../../api/api';
 
     export default {
         data() {
@@ -312,7 +312,7 @@
                 var driverId =   this.editForm1.driverId
                 this.editLoading1 = true;
                 NProgress.start();
-                if(this.carForm.carId == 0)
+                if(this.carForm.carId == "")
                 {
                     this.editLoading1 = false;
                     this.$notify.error({
@@ -328,8 +328,12 @@
                             this.editLoading1 = false;
                             this.editForm1 = res.result;
                             this.editForm1.driverId = driverId;
-                            // console.log( this.editForm1 );
-                            this.carForm.carId = '';
+                           // console.log( this.editForm1.driverId );
+                            this.$notify({
+                                title: '成功',
+                                message: '查询车辆信息成功，可以进行换车',
+                                type: 'success'
+                            });
                             NProgress.done();
                         }
                         else{
@@ -337,7 +341,7 @@
                             this.carForm.carId = '';
                             this.$notify.error({
                                 title: '查询失败',
-                                message: "车辆Id不存在或者该车辆现在不支持绑定司机",
+                                message: "车辆Id不存在或者该车辆现在不再支持绑定司机",
                                 type: 'error'
                             });
                         }
@@ -365,6 +369,7 @@
             // //删除
             handleDel: function (row) {
                 //console.log(row);
+               // console.log(row.driverInfo.driverId);
                 var _this = this;
                 this.$confirm('确认删除该记录吗?', '提示', {
                     //type: 'warning'
@@ -373,6 +378,7 @@
                     NProgress.start();
                     let param = new FormData();
                     param.append("driverId", row.driverInfo.driverId);
+                    //param.append("carId",row.driverInfo.driverId);
                     deleteDriverInfoByDriverId(param).then((res) => {
                         if (res.status === 1) {
                             _this.listLoading = false;
@@ -404,7 +410,7 @@
                 this.editForm.driverLicence = row.driverInfo.driverLicence;
                 this.editForm.driverLevelStar = row.driverInfo.driverLevelStar;
             },
-            //显示司机信息编辑界面
+            //显示换车编辑界面
             changeCar: function (row) {
                 console.log("row,", row)
                 this.editFormVisible1 = true;
@@ -417,29 +423,31 @@
             },
             editSubmit1: function () {
                 var _this = this;
-                _this.$refs.editForm.validate((valid) => {
+                _this.$refs.editForm1.validate((valid) => {
                     if (valid) {
-                        _this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                        _this.$confirm('确认换车吗？', '提示', {}).then(() => {
                             _this.editLoading = true;
                             NProgress.start();
                             _this.btnEditText = '提交中';
-                            //编辑
                             let param = {
                                 driverId: _this.editForm1.driverId,
                                 carId: _this.editForm1.carId
+
                             };
-                            updateDriverInfoByDriverId(param).then((res) => {
+                            console.log(param);
+                            changCar(param).then((res) => {
                                 console.log("!!!", res)
                                 if (res.status === 1) {
+                                    this.carForm.carId = '';
                                     _this.editLoading = false;
                                     NProgress.done();
                                     _this.btnEditText = '提 交';
                                     _this.$notify({
                                         title: '成功',
-                                        message: '提交成功',
+                                        message: '换车成功',
                                         type: 'success'
                                     });
-                                    _this.editFormVisible = false;
+                                    _this.editFormVisible1 = false;
                                     _this.getDriver();
                                 }
                             });
@@ -456,7 +464,7 @@
                 var _this = this;
                 _this.$refs.editForm.validate((valid) => {
                     if (valid) {
-                        _this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                        _this.$confirm('确认修改该司机的信息吗？', '提示', {}).then(() => {
                             _this.editLoading = true;
                             NProgress.start();
                             _this.btnEditText = '提交中';
@@ -485,13 +493,9 @@
                                     _this.getDriver();
                                 }
                             });
-
-
                         });
-
                     }
                 });
-
             },
 
         mounted() {

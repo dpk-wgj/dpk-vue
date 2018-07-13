@@ -55,6 +55,8 @@ export const importExcel = params => { return axios.post(`/admin/driver/importEx
 
 export const makeExcel = () => { return axios.post(`/admin/driver/makeExcel`,).then(res => res.data); };
 
+export const changCar = params => { return axios.post(`/admin/driver/changCar`,params).then(res => res.data); };
+
 
 export const addCarInfo = params => { return axios.post(`/admin/car/addCarInfo`, params).then(res => res.data); };
 
