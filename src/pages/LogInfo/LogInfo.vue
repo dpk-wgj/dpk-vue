@@ -3,11 +3,38 @@
 		<!--工具条-->
 		<el-col :span="24" class="toolbar">
 			<el-form :inline="true" :model="filters">
-				<el-form-item>
-					<el-input v-model="filters.name" placeholder="姓名"></el-input>
+				<el-form-item label="起始时间">
+					<el-col :span="11">
+						<el-date-picker type="date" placeholder="选择日期" v-model="trackDate.startYmd" style="width: 100%;" ></el-date-picker>
+					</el-col>
+					<el-col class="line" :span="2">&nbsp;&nbsp;&nbsp;&nbsp;-</el-col>
+					<el-col :span="11">
+						<el-time-picker type="fixed-time" placeholder="选择时间" v-model="trackDate.startHms" style="width: 100%;"></el-time-picker>
+					</el-col>
+				</el-form-item>
+				<el-form-item label="结束时间">
+					<el-col :span="11">
+						<el-date-picker type="date" placeholder="选择日期"  v-model="trackDate.endYmd" style="width: 100%;"></el-date-picker>
+					</el-col>
+					<el-col class="line" :span="2">&nbsp;&nbsp;&nbsp;&nbsp;-</el-col>
+					<el-col :span="11">
+						<el-time-picker type="fixed-time" placeholder="选择时间"  v-model="trackDate.endHms" style="width: 100%;"></el-time-picker>
+					</el-col>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" v-on:click="getUsers">查询</el-button>
+					<el-input v-model="formData.logInfo.logId" placeholder="日志编号"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="formData.logInfo.action" placeholder="用户行为"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="formData.logInfo.roleId" placeholder="用户角色"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input v-model="formData.logInfo.orderId" placeholder="订单编号"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" v-on:click="getLogInfoList">查询</el-button>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="handleAdd">新增</el-button>
@@ -17,31 +44,29 @@
 
 		<!--列表-->
 		<template>
-			<el-table :data="users" highlight-current-row v-loading="listLoading" style="width: 100%;">
-<el-table-column type="index" width="60">
-</el-table-column>
-<el-table-column prop="name" label="姓名" width="120" sortable>
-</el-table-column>
-<el-table-column prop="sex" label="性别" width="100" :formatter="formatSex" sortable>
-</el-table-column>
-<el-table-column prop="age" label="年龄" width="100" sortable>
-</el-table-column>
-<el-table-column prop="birth" label="生日" width="120" sortable>
-</el-table-column>
-<el-table-column prop="addr" label="地址" min-width="180" sortable>
-</el-table-column>
-<el-table-column inline-template :context="_self" label="操作" width="150">
-	<span>
-					<el-button size="small" @click="handleEdit(row)">编辑</el-button>
-					<el-button type="danger" size="small" @click="handleDel(row)">删除</el-button>
-				</span>
-</el-table-column>
-</el-table>
-</template>
+			<el-table :data="infolist" highlight-current-row v-loading="listLoading" style="width: 100%;">
+				<el-table-column prop="logId" label="日志编号" sortable>
+				</el-table-column>
+				<el-table-column prop="action" label="用户行为" sortable>
+				</el-table-column>
+				<el-table-column prop="roleId" label="用户角色" :formatter="formatRole" sortable>
+				</el-table-column>
+				<el-table-column prop="logTime" label="行为时间"  sortable>
+				</el-table-column>
+				<el-table-column prop="orderId" label="订单编号"  sortable>
+				</el-table-column>
+				<el-table-column inline-template :context="_self" label="操作" >
+					<span>
+						<el-button size="small" @click="handleEdit(row)">编辑</el-button>
+						<el-button type="danger" size="small" @click="handleDel(row)">删除</el-button>
+					</span>
+				</el-table-column>
+			</el-table>
+		</template>
 
 <!--分页-->
 <el-col :span="24" class="toolbar" style="padding-bottom:10px;">
-<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+<el-pagination layout="prev, pager, next" @current-change="" :page-size="20" :total="total" style="float:right;">
 </el-pagination>
 </el-col>
 
@@ -82,15 +107,40 @@
 <script>
 	import util from '../../common/util'
 	import NProgress from 'nprogress'
-	import { getUserListPage, removeUser, editUser, addUser } from '../../api/api';
+	import { findLogInfoMultiCondition, getLogInfoByLogId} from '../../api/api';
 
 	export default {
 		data() {
 			return {
-				filters: {
-					name: ''
+				formData: {
+					logInfo: {
+						logId: '',
+						action: '',
+						roleId: '',
+						logTime: '',
+						orderId: '',
+					},
 				},
-				users: [],
+				filters: {
+					offset: 0,
+					sort: 'log_id',
+					order: 'desc',
+					limit: 10,
+					logInfo: {
+						logId: '',
+						action: '',
+						roleId: '',
+						logTime: '',
+						orderId: '',
+					},
+				},
+				trackDate: {
+					startYmd: null,
+					startHms: null,
+					endYmd: null,
+					endHms: null
+            	},
+				infolist: [],
 				total: 0,
 				page: 1,
 				listLoading: false,
@@ -116,25 +166,36 @@
 			}
 		},
 		methods: {
-			//性别显示转换
-			formatSex: function (row, column) {
-				return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
+			//角色显示转换
+			formatRole: function (row, column) {
+				return row.roleId == 1 ? '司机' : row.roleId == 2 ? '乘客' : '未知';
 			},
-			handleCurrentChange(val) {
-				this.page = val;
-				this.getUsers();
-			},
-			//获取用户列表
-			getUsers() {
+			// handleCurrentChange(val) {
+			// 	this.page = val;
+			// 	this.getLogInfoList();
+			// },
+			//获取用户日志列表
+			getLogInfoList() {
 				let para = {
-					page: this.page,
-					name: this.filters.name
+					// page: this.page,
+					// name: this.filters.name,
+					offset: this.filters.offset,
+					sort: this.filters.sort,
+					order: this.filters.order,
+					limit: this.filters.limit,
+					logInfo: {
+						logId: this.filters.logInfo.logId,
+						action: this.filters.logInfo.action,
+						roleId: this.filters.logInfo.roleId,
+						logTime: this.filters.logInfo.logTime,
+						orderId: this.filters.logInfo.orderId,
+					},
 				};
 				this.listLoading = true;
 				NProgress.start();
-				getUserListPage(para).then((res) => {
-					this.total = res.data.total;
-					this.users = res.data.users;
+				findLogInfoMultiCondition(para).then((res) => {
+					this.total = res.result.count;
+					this.infolist = res.result.logInfoList;
 					this.listLoading = false;
 					NProgress.done();
 				});
@@ -157,7 +218,7 @@
 							message: '删除成功',
 							type: 'success'
 						});
-						_this.getUsers();
+						_this.getLogInfoList();
 					});
 
 				}).catch(() => {
@@ -206,7 +267,7 @@
 										type: 'success'
 									});
 									_this.editFormVisible = false;
-									_this.getUsers();
+									_this.getLogInfoList();
 								});
 							} else {
 								//编辑
@@ -228,7 +289,7 @@
 										type: 'success'
 									});
 									_this.editFormVisible = false;
-									_this.getUsers();
+									_this.getLogInfoList();
 								});
 
 							}
@@ -255,7 +316,7 @@
 			}
 		},
 		mounted() {
-			this.getUsers();
+			this.getLogInfoList();
 		}
 	}
 </script>
