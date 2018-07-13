@@ -27,7 +27,17 @@ export const addUser = params => { return axios.get(`${base}/user/add`, { params
 
 
 // 管理员
-export const getUserInfoById = params => { return axios.get(`/api/getUserInfoById/${params.userId}`).then(res => res.data); };
+export const getUserInfoById = params => { return axios.post(`/adminmanger/getUserInfoById/${params.userId}`).then(res => res.data); };
+
+export const getAdminByUsername = params => { return axios.post(`/adminmanger/getAdminByUsername/${params.username}`).then(res => res.data); };
+
+export const getAllAdminByUsername = params => { return axios.post(`/adminmanger/getAllAdminByUsername`, params).then(res => res.data); };
+
+export const deleteAdminInfoById = params => { return axios.post(`/adminmanger/deleteAdminInfoById`, params).then(res => res.data); };
+
+export const addAdminInfo = params => { return axios.post(`/adminmanger/addAdminInfo`, params).then(res => res.data); };
+
+export const updateAdminInfo = params => { return axios.post(`/adminmanger/updateAdminInfo`, params).then(res => res.data); };
 
 export const adminLogin = params => { 
     return axios.post(`/public/admin/login`, params).then(res => {

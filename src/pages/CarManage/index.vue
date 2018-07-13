@@ -77,6 +77,7 @@
 
 	export default {
 		data() {
+
 			return {
 				filters: {
 					carType: '',
@@ -99,7 +100,7 @@
 				btnEditText: '提 交',
 				editFormRules: {
 					name: [
-						{ required: true, message: '请输入姓名', trigger: 'blur' }
+						{ required: true, message: '请输入姓名',trigger: 'blur' }//
 					]
 				},
 				pageParam: {

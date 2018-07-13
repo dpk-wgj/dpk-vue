@@ -80,6 +80,15 @@ const routes = [
       { path: '/adminInfo', component: AdminInfo, name: '管理用户管理' }
     ]
   },
+    {
+        path: '/',
+        component: Home,
+        name: '管理分组管理',
+        iconCls: 'fa fa-bar-chart',
+        children: [
+            { path: '/adminGroup', component: AdminInfo, name: '管理分组管理' }
+        ]
+    },
   {
     path: '/',
     component: Home,
