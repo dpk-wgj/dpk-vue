@@ -12,9 +12,9 @@ import 'nprogress/nprogress.css'
 import Login from './pages/Login.vue'
 import Home from './pages/Home.vue'
 import Main from './pages/Main.vue'
-import Table from './pages/nav1/Table.vue'
-import Form from './pages/nav1/Form.vue'
-import user from './pages/nav1/user.vue'
+import LogInfo from './pages/LogInfo/LogInfo.vue'
+// import Form from './pages/nav1/Form.vue'
+// import user from './pages/nav1/user.vue'
 import Page4 from './pages/nav2/Page4.vue'
 import Page5 from './pages/nav2/Page5.vue'
 import Page6 from './pages/DriverInfo/driver.vue'
@@ -94,13 +94,13 @@ const routes = [
   {
     path: '/',
     component: Home,
-    name: '导航一',
+    name: '用户日志管理',
     iconCls: 'el-icon-message',//图标样式class
     children: [
       //{ path: '/main', component: Main },
-      { path: '/table', component: Table, name: 'Table' },
-      { path: '/form', component: Form, name: 'Form' },
-      { path: '/user', component: user, name: '列表' },
+      { path: '/logInfo', component: LogInfo, name: '用户行为日志' },
+      // { path: '/form', component: Form, name: 'Form' },
+      // { path: '/user', component: user, name: '列表' },
     ]
   },
   {
