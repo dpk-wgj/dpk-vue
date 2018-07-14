@@ -39,7 +39,7 @@
 		<!--界面-->
 		<el-dialog :title="editFormTtile" v-model="editFormVisible" :close-on-click-modal="false">
 			<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-				<el-form-item label="组名" prop="username">
+				<el-form-item label="组名" prop="groupName">
 					<el-input v-model="editForm.groupName" auto-complete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="权限"prop="permission">
@@ -73,8 +73,8 @@
                 editFormTtile: '',//界面标题
                 editLoading: false,
                 editFormRules: {
-                    username: [
-                        { required: true, message: '请输入姓名', trigger: 'blur' }
+                    groupName: [
+                        { required: true, message: '请输入组名', trigger: 'blur' }
                     ],
                     permission: [
                         { required: true, message: '请输入权限', trigger: 'blur' }
