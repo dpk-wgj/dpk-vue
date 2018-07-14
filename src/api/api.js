@@ -74,6 +74,11 @@ export const getAllCarLocation = () => { return axios.get(`/admin/driver/getAllC
 
 export const getLocationInfoByDate = param => { return axios.post(`/admin/order/getLocationInfoByDate`, param).then(res => res.data); };
 
+//用户行为日志管理
+export const findLogInfoMultiCondition = params => { return axios.post(`/admin/logInfo/findLogInfoMultiCondition`, params).then(res => res.data); };
+
+export const getLogInfoByLogId = param => { return axios.get(`/admin/logInfo/getLogInfoByLogId/${params.logId}`,).then(res => res.data); };
+
 // 
 // export const getLocationInfoByDate = param => { return axios.post(`/admin/order/getLocationInfoByDate`, param).then(res => res.data); };
 
