@@ -127,7 +127,7 @@
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取 消</el-button>
-				<el-button type="primary" @click.native="editSubmit" :loading="editLoading">{{btnEditText}}</el-button>
+				<el-button type="primary" @click.native="editSubmit2" :loading="editLoading">{{btnEditText}}</el-button>
 			</div>
 		</el-dialog>
         <!--编辑换车界面-->
@@ -137,7 +137,7 @@
                 <el-form-item label="搜索">
                 <el-button type="primary" v-on:click="getCar">查询</el-button>
                 <el-col :span="5">
-                    <el-input v-model="carForm.carId" placeholder="请输入车辆Id" ></el-input>
+                    <el-input v-model="carForm.carNumber" placeholder="请输入车牌号码" ></el-input>
                 </el-col>
             </el-form-item>
                 <el-form-item label="车辆Id" prop="carId">
@@ -164,7 +164,7 @@
             </el-row>
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="editFormVisible1 = false">取 消</el-button >
-                <el-button type="primary" @click.native="editSubmit1" :loading="editLoading1">{{btnEditText1}}</el-button>
+                <el-button type="primary" @click.native="editSubmit1()" :loading="editLoading1">{{btnEditText1}}</el-button>
             </div>
         </el-dialog>
 	</section>
@@ -172,8 +172,7 @@
 
 <script>
     import NProgress from 'nprogress'
-    import { getDriverInfoByMultiCondition,updateDriverInfoByDriverId,deleteDriverInfoByDriverId ,importExcel,makeExcel,getCarInfoNoCompatibleByCarId,changCar} from '../../api/api';
-
+    import { getDriverInfoByMultiCondition,updateDriverInfoByDriverId,deleteDriverInfoByDriverId ,importExcel,makeExcel,getCarInfoNoCompatibleByCarNumber,changCar} from '../../api/api';
     export default {
         data() {
             return {
@@ -184,7 +183,7 @@
                     driverLevelStar:""
                 },
                 carForm: {
-                    carId:""
+                    carNumber:""
                 },
                 driverInfo: [],
                 total: 0,
@@ -226,7 +225,7 @@
                 },
                 editFormRules1: {
                     name: [
-                        { required: true, message: '请输入车辆Id', trigger: 'blur' }
+                        { required: true, message: '请输入车牌号码', trigger: 'blur' }
                     ]
                 }
 
@@ -234,7 +233,7 @@
         },
         methods: {
             submitUpload: function () {
-                 this.$refs.upload.submit();
+                this.$refs.upload.submit();
             },
             handleRemove(file, fileList) {
                 console.log(file, fileList);
@@ -248,36 +247,37 @@
             },
             beforeUpload: function (file) {
                 console.log(file)
-                var testmsg = file.name.substring(file.name.lastIndexOf('.')+1)
+                var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
                 const extension = testmsg === 'xls'
                 const extension2 = testmsg === 'xlsx'
                 const isLt2M = file.size / 1024 / 1024 < 10
-				if(!extension && !extension2) {
+                if (!extension && !extension2) {
                     this.$message({
                         message: '上传文件只能是 xls、xlsx格式!',
                         type: 'warning'
                     });
                 }
-                else if(!isLt2M) {
+                else if (!isLt2M) {
                     this.$message({
                         message: '上传文件大小不能超过 10MB!',
                         type: 'warning'
                     });
                 }
-                else{
-                 //这里是重点，将文件转化为formdata数据上传
-                let fd = new FormData()
-                fd.append('file', file)
-                importExcel(fd).then((res) => {
-                    this.$notify({
-                        title: '成功',
-                        message: '导入司机信息成功',
-                        type: 'success'
+                else {
+                    //这里是重点，将文件转化为formdata数据上传
+                    let fd = new FormData()
+                    fd.append('file', file)
+                    importExcel(fd).then((res) => {
+                        this.$notify({
+                            title: '成功',
+                            message: '导入司机信息成功',
+                            type: 'success'
+                        });
+                        this.getDriver();
+                    }, (res) => {
+                        console.log(res)
                     });
-                    this.getDriver();
-                }, (res) => {
-                    console.log(res)
-                });}
+                }
                 return false;
             },
 
@@ -286,18 +286,18 @@
                 this.getDriver();
             },
             getDriver: function () {
-                let param = {
-                    sort: "driver_id",
-                    order: "asc",
-                    offset: (this.page - 1) * 10,
-                    limit: 10,
-                    driverInfo: {
-                        driverName: this.filters.driverName,
-                        driverPhoneNumber: this.filters.driverPhoneNumber,
-                        driverLevelStar: this.filters.driverLevelStar
+                    let param = {
+                        sort: "driver_id",
+                        order: "asc",
+                        offset: (this.page - 1) * 10,
+                        limit: 10,
+                        driverInfo: {
+                            driverName: this.filters.driverName,
+                            driverPhoneNumber: this.filters.driverPhoneNumber,
+                            driverLevelStar: this.filters.driverLevelStar
+                        }
                     }
-                }
-                this.listLoading = true;
+                    this.listLoading = true;
                 NProgress.start();
                 getDriverInfoByMultiCondition(param).then((res) => {
                     if (res.status === 1) {
@@ -309,54 +309,66 @@
                 });
             },
             getCar: function () {
-                var driverId =   this.editForm1.driverId
+                var driverId = this.editForm1.driverId
                 this.editLoading1 = true;
                 NProgress.start();
-                if(this.carForm.carId == "")
-                {
+                if (this.carForm.carNumber == "") {
                     this.editLoading1 = false;
                     this.$notify.error({
-                    title: '查询失败！',
-                    message: "输入Id为空查询失败",
-                    type: 'error'
-                });
+                        title: '查询失败！',
+                        message: "输入车牌号码为空查询失败",
+                        type: 'error'
+                    });
+                    NProgress.done();
+                    this.carForm.carNumber = '';
                 }
-                else{
-                getCarInfoNoCompatibleByCarId(this.carForm.carId)
-                    .then((res) => {
-                        if (res.status === 1) {
-                            this.editLoading1 = false;
-                            this.editForm1 = res.result;
-                            this.editForm1.driverId = driverId;
-                           // console.log( this.editForm1.driverId );
-                            this.$notify({
-                                title: '成功',
-                                message: '查询车辆信息成功，可以进行换车',
-                                type: 'success'
-                            });
-                            NProgress.done();
-                        }
-                        else{
-                            this.editLoading1 = false;
-                            this.carForm.carId = '';
-                            this.$notify.error({
-                                title: '查询失败',
-                                message: "车辆Id不存在或者该车辆现在不再支持绑定司机",
-                                type: 'error'
-                            });
-                        }
+                else if(this.carForm.carNumber == this.editForm1.carNumber)
+				{
+                    this.editLoading1 = false;
+                    this.$notify.error({
+                        title: '查询失败！',
+                        message: "输入车牌号码相同，若想换新车请，请输入新的车牌号",
+                        type: 'error'
+                    });
+                    this.carForm.carNumber = '';
+                    NProgress.done();
+				}
+                else {
+                    getCarInfoNoCompatibleByCarNumber(this.carForm.carNumber)
+                        .then((res) => {
+                            if (res.status === 1) {
+                                this.editLoading1 = false;
+                                this.editForm1 = res.result;
+                                this.editForm1.driverId = driverId;
+                                // console.log( this.editForm1.driverId );
+                                this.$notify({
+                                    title: '成功',
+                                    message: '查询车辆信息成功，可以进行换车',
+                                    type: 'success'
+                                });
+                                NProgress.done();
+                            }
+                            else {
+                                this.editLoading1 = false;
+                                this.carForm.carNumber = '';
+                                this.$notify.error({
+                                    title: '查询失败',
+                                    message: "车牌号码不存在或者该车辆现在不再支持绑定司机",
+                                    type: 'error'
+                                });
+                            }
 
-                })
-                   }
+                        })
+                }
             },
-            getExcel(){
+            getExcel() {
                 makeExcel()
                     .then((response) => {
                         this.$notify({
-                        title: '成功',
-                        message: '导出信息表成功文件位置存放在D盘根目录下',
-                        type: 'success'
-                    });
+                            title: '成功',
+                            message: '导出信息表成功文件位置存放在D盘根目录下',
+                            type: 'success'
+                        });
                     }).catch((error) => {
                     this.$message.error(error.data.message);
                     this.$notify({
@@ -369,23 +381,22 @@
             // //删除
             handleDel: function (row) {
                 //console.log(row);
-               // console.log(row.driverInfo.driverId);
+                // console.log(row.driverInfo.driverId);
                 var _this = this;
-                this.$confirm('确认删除该记录吗?', '提示', {
-                    //type: 'warning'
+                this.$confirm('确认删除该司机信息吗?', '提示', {
+                    type: 'warning'
                 }).then(() => {
                     _this.listLoading = true;
                     NProgress.start();
                     let param = new FormData();
                     param.append("driverId", row.driverInfo.driverId);
-                    //param.append("carId",row.driverInfo.driverId);
                     deleteDriverInfoByDriverId(param).then((res) => {
                         if (res.status === 1) {
                             _this.listLoading = false;
                             NProgress.done();
                             _this.$notify({
                                 title: '成功',
-                                message: '删除成功',
+                                message: '删除司机信息成功',
                                 type: 'success'
                             });
                             _this.getDriver();
@@ -398,7 +409,7 @@
             },
             //显示司机信息编辑界面
             handleEdit: function (row) {
-                console.log("row,", row)
+                // console.log("row,", row)
                 this.editFormVisible = true;
                 this.editFormTtile = '编辑';
                 this.editForm.id = row.id;
@@ -412,7 +423,7 @@
             },
             //显示换车编辑界面
             changeCar: function (row) {
-                console.log("row,", row)
+                // console.log("row,", row)
                 this.editFormVisible1 = true;
                 this.editForm1.id = row.id;
                 this.editForm1.driverId = row.driverInfo.driverId;
@@ -424,22 +435,29 @@
             editSubmit1: function () {
                 var _this = this;
                 _this.$refs.editForm1.validate((valid) => {
+                    if(this.carForm.carNumber == "") {
+                        _this.$notify({
+                            title: '失败',
+                            message: '车牌号码未改变,换车失败！',
+                            type: 'error'
+                        });
+                    }
+                    else{
                     if (valid) {
+
                         _this.$confirm('确认换车吗？', '提示', {}).then(() => {
-                            _this.editLoading = true;
+                            _this.editLoading1 = true;
                             NProgress.start();
                             _this.btnEditText = '提交中';
                             let param = {
                                 driverId: _this.editForm1.driverId,
                                 carId: _this.editForm1.carId
-
                             };
-                            console.log(param);
                             changCar(param).then((res) => {
-                                console.log("!!!", res)
+                                // console.log("!!!", res)
                                 if (res.status === 1) {
                                     this.carForm.carId = '';
-                                    _this.editLoading = false;
+                                    _this.editLoading1 = false;
                                     NProgress.done();
                                     _this.btnEditText = '提 交';
                                     _this.$notify({
@@ -447,20 +465,17 @@
                                         message: '换车成功',
                                         type: 'success'
                                     });
+                                    this.carForm.carNumber = '';
                                     _this.editFormVisible1 = false;
                                     _this.getDriver();
                                 }
                             });
-
-
                         });
-
+                        }
                     }
                 });
-
             },
-        },
-            editSubmit: function () {
+            editSubmit2: function () {
                 var _this = this;
                 _this.$refs.editForm.validate((valid) => {
                     if (valid) {
@@ -479,14 +494,14 @@
                                 driverLevelStar: _this.editForm.driverLevelStar,
                             };
                             updateDriverInfoByDriverId(param).then((res) => {
-                                console.log("!!!", res)
+                                // console.log("!!!", res)
                                 if (res.status === 1) {
                                     _this.editLoading = false;
                                     NProgress.done();
                                     _this.btnEditText = '提 交';
                                     _this.$notify({
                                         title: '成功',
-                                        message: '提交成功',
+                                        message: '编辑成功',
                                         type: 'success'
                                     });
                                     _this.editFormVisible = false;
@@ -496,8 +511,8 @@
                         });
                     }
                 });
-            },
-
+            }
+        },
         mounted() {
             this.getDriver();
         }
