@@ -319,6 +319,7 @@
                         message: "输入车牌号码为空查询失败",
                         type: 'error'
                     });
+                    NProgress.done();
                     this.carForm.carNumber = '';
                 }
                 else if(this.carForm.carNumber == this.editForm1.carNumber)
@@ -326,10 +327,11 @@
                     this.editLoading1 = false;
                     this.$notify.error({
                         title: '查询失败！',
-                        message: "输入车牌号码与原车牌号码相同，不允许换车",
+                        message: "输入车牌号码相同，若想换新车请，请输入新的车牌号",
                         type: 'error'
                     });
                     this.carForm.carNumber = '';
+                    NProgress.done();
 				}
                 else {
                     getCarInfoNoCompatibleByCarNumber(this.carForm.carNumber)
@@ -433,16 +435,16 @@
             editSubmit1: function () {
                 var _this = this;
                 _this.$refs.editForm1.validate((valid) => {
+                    if(this.carForm.carNumber == "") {
+                        _this.$notify({
+                            title: '失败',
+                            message: '车牌号码未改变,换车失败！',
+                            type: 'error'
+                        });
+                    }
+                    else{
                     if (valid) {
-                        if(this.carForm.carNumber == "")
-						{
-                            _this.$notify({
-                                title: '失败',
-                                message: '车牌号码未改变,换车失败！',
-                                type: 'error'
-                            });
-						}
-						else{
+
                         _this.$confirm('确认换车吗？', '提示', {}).then(() => {
                             _this.editLoading1 = true;
                             NProgress.start();
