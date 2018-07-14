@@ -286,18 +286,18 @@
                 this.getDriver();
             },
             getDriver: function () {
-                let param = {
-                    sort: "driver_id",
-                    order: "asc",
-                    offset: (this.page - 1) * 10,
-                    limit: 10,
-                    driverInfo: {
-                        driverName: this.filters.driverName,
-                        driverPhoneNumber: this.filters.driverPhoneNumber,
-                        driverLevelStar: this.filters.driverLevelStar
+                    let param = {
+                        sort: "driver_id",
+                        order: "asc",
+                        offset: (this.page - 1) * 10,
+                        limit: 10,
+                        driverInfo: {
+                            driverName: this.filters.driverName,
+                            driverPhoneNumber: this.filters.driverPhoneNumber,
+                            driverLevelStar: this.filters.driverLevelStar
+                        }
                     }
-                }
-                this.listLoading = true;
+                    this.listLoading = true;
                 NProgress.start();
                 getDriverInfoByMultiCondition(param).then((res) => {
                     if (res.status === 1) {

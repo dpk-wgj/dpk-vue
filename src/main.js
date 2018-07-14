@@ -8,16 +8,15 @@ import store from './vuex/store'
 import Vuex from 'vuex'
 import NProgress from 'nprogress'//页面顶部进度条
 import 'nprogress/nprogress.css'
-
 import Login from './pages/Login.vue'
 import Home from './pages/Home.vue'
 import Main from './pages/Main.vue'
 import LogInfo from './pages/LogInfo/LogInfo.vue'
 // import Form from './pages/nav1/Form.vue'
 // import user from './pages/nav1/user.vue'
-import Page4 from './pages/nav2/Page4.vue'
-import Page5 from './pages/nav2/Page5.vue'
-import Page6 from './pages/DriverInfo/driver.vue'
+// import Page4 from './pages/nav2/Page4.vue'
+// import Page5 from './pages/nav2/Page5.vue'
+import DriverInfo from './pages/DriverInfo/driver.vue'
 import CarLocation from './pages/CarLocationInfo/CarLocation/index.vue'
 import CarTrack from './pages/CarLocationInfo/CarTrack/index.vue'
 import AdminInfo from './pages/AdminInfo/index.vue'
@@ -68,7 +67,7 @@ const routes = [
     children: [
       { path: '/order/list', component: OrderList, name: '订单检索' },
       { path: '/order/complaint', component: OrderComplaint, name: '投诉处理' },
-      { path: '/order/statistics', component: OrderStatistics, name: '数据统计' }
+      // { path: '/order/statistics', component: OrderStatistics, name: '数据统计' }
     ]
   },
   {
@@ -103,23 +102,23 @@ const routes = [
       // { path: '/user', component: user, name: '列表' },
     ]
   },
-  {
-    path: '/',
-    component: Home,
-    name: '导航二',
-    iconCls: 'fa fa-id-card-o',
-    children: [
-      { path: '/page4', component: Page4, name: '页面4' },
-      { path: '/page5', component: Page5, name: '页面5' }
-    ]
-  },
+  // {
+  //   path: '/',
+  //   component: Home,
+  //   name: '导航二',
+  //   iconCls: 'fa fa-id-card-o',
+  //   children: [
+  //     { path: '/page4', component: Page4, name: '页面4' },
+  //     { path: '/page5', component: Page5, name: '页面5' }
+  //   ]
+  // },
   {
     path: '/',
     component: Home,
     name: '司机管理',
     iconCls: 'fa fa-address-card',
     children: [
-      { path: '/driver', component: Page6, name: '司机管理' }
+      { path: '/driver', component: DriverInfo, name: '司机管理' }
     ]
   },
   {
