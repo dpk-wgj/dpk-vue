@@ -21,6 +21,7 @@ import Page6 from './pages/DriverInfo/driver.vue'
 import CarLocation from './pages/CarLocationInfo/CarLocation/index.vue'
 import CarTrack from './pages/CarLocationInfo/CarTrack/index.vue'
 import AdminInfo from './pages/AdminInfo/index.vue'
+import AdminGroup from './pages/AdminGroup/index.vue'
 import CarManage from './pages/CarManage/index.vue'
 import OrderList from './pages/OrderManage/OrderList/index.vue'
 import OrderComplaint from './pages/OrderManage/OrderComplaint/index.vue'
@@ -86,7 +87,7 @@ const routes = [
         name: '管理分组管理',
         iconCls: 'fa fa-bar-chart',
         children: [
-            { path: '/adminGroup', component: AdminInfo, name: '管理分组管理' }
+            { path: '/adminGroup', component: AdminGroup, name: '管理分组管理' }
         ]
     },
   {

@@ -49,6 +49,20 @@ export const adminLogin = params => {
     }); 
 };
 
+//管理用户分组
+
+export const getAdminGroupById = params => { return axios.post(`/admin/Admingroup/getAdminGroupById`, params).then(res => res.data); };
+
+export const getAdminGroupByName = params => { return axios.post(`/admin/Admingroup/getAdminGroupByName`, params).then(res => res.data); };
+
+export const deleteAdminGroup = params => { return axios.post(`/admin/Admingroup/deleteAdminGroup`, params).then(res => res.data); };
+
+export const addAdminGroup = params => { return axios.post(`/admin/Admingroup/addAdminGroup`, params).then(res => res.data); };
+
+export const updateAdminGroupById = params => { return axios.post(`/admin/Admingroup/updateAdminGroupById`, params).then(res => res.data); };
+
+export const getAllAdminGroup = () => { return axios.get(`/admin/Admingroup/getAllAdminGroup/`).then(res => res.data); };
+
 
 //车辆
 export const getCarInfoByCarId = params => { return axios.get(`/admin/car/getCarInfoByCarId/${params.carId}`).then(res => res.data); };
