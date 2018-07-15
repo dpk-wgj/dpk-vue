@@ -36,7 +36,6 @@
 						:before-upload="beforeUpload"
                         :auto-upload="false"
 						:limit="1"
-                        :multiple="false"
 						:file-list="fileList">
 					<el-button  slot="trigger" size="small" type="primary">选择文件</el-button>
                     <el-button  style="margin-left: 10px" size="small" type="success" @click ="submitUpload">导入信息</el-button>
@@ -157,7 +156,7 @@
                 </el-form-item>
                 <el-form-item label="车座位数"  prop="carSeat">
                     <el-col :span="5">
-                    <el-input  v-model="editForm1.carSeat"style="width: 100%;" disabled></el-input>
+                    <el-input  v-model="editForm1.carSeat" style="width: 100%;" disabled></el-input>
                     </el-col>
                 </el-form-item>
             </el-form>
