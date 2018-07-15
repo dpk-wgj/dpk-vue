@@ -66,7 +66,7 @@ export const findCarInfoByMultiCondition = params => { return axios.post(`/admin
 
 export const getDriverInfoByMultiCondition = params => { return axios.post(`/admin/driver/getDriverInfoByMultiCondition`, params).then(res => res.data); };
 
-export const getCarInfoNoCompatibleByCarId = params => { return axios.get(`/admin/car/getCarInfoNoCompatibleByCarId/${params}`,).then(res => res.data); };
+export const getCarInfoNoCompatibleByCarNumber = params => { return axios.get(`/admin/car/getCarInfoNoCompatibleByCarNumber/${params}`,).then(res => res.data); };
 
 
 //车辆定位
@@ -84,5 +84,7 @@ export const getLogInfoByLogId = params => { return axios.post(`/admin/logInfo/g
 
 
 //Order订单接口
+
+export const findOrderInfoByMultiCondition = param => { return axios.post(`/admin/findOrderInfoByMultiCondition`,param).then(res => res.data); };
 // export const getCarInfoByCarId = params => { return axios.get(`/api/driver/getOrderInfoByDriverId}`).then(res => res.data); };
 

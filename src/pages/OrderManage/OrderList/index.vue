@@ -4,106 +4,82 @@
 		<el-col :span="24" class="toolbar">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
-					<el-input v-model="filters.driverName" placeholder="司机"></el-input>
+					<el-input v-model="filters.driverName" placeholder="司机姓名"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-input v-model="filters.passengerPhone" placeholder="乘客手机号"></el-input>
+					<el-input v-model="filters.passengerPhoneNumber" placeholder="乘客手机号"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" v-on:click="getCars">查询</el-button>
+					<el-button type="primary" v-on:click="getOrder">查询</el-button>
 				</el-form-item>
-				<el-form-item>
-					<el-button type="primary" @click="handleAdd">新增</el-button>
-				</el-form-item>
+
 			</el-form>
 		</el-col>
-
 		<!--列表-->
-		<template>
-			<el-table :data="cars" highlight-current-row v-loading="listLoading" style="width: 100%;">
-				<el-table-column type="index" width="60">
+			<el-table :data="orderList"  v-loading="listLoading"
+					  style="width: 100% ;margin: 10px 0 10px 0"
+					  stripe
+					  border>
+				<el-table-column type="index">
 				</el-table-column>
-				<el-table-column prop="carInfo.carNumber" label="车牌号" width="250" sortable>
+				<el-table-column prop="orderInfo.orderId" label="订单Id" align="center" sortable >
 				</el-table-column>
-				<el-table-column prop="carInfo.carType" label="车辆类型" width="250" sortable>
+                <el-table-column prop="orderInfo.startTime" label="订单创建时间"  align="center" sortable width="200px">
+                </el-table-column>
+                <el-table-column prop="orderInfo.endTime" label="订单结束时间"   align="center"  width="200px" sortable>
+                </el-table-column>
+				<el-table-column label="乘客信息" align="center">
+					<el-table-column prop="passenger.passengerWxId" label="微信号" align="center" >
+					</el-table-column>
+					<el-table-column prop="passenger.passengerPhoneNumber" label="手机号" align="center" >
+					</el-table-column>
 				</el-table-column>
-				<el-table-column prop="carInfo.carSeat" label="座位数" width="250" sortable>
+				<el-table-column  label="司机信息"  align="center">
+					<el-table-column prop="driverInfo.driverName" label="姓名" align="center" >
+					</el-table-column>
+					<el-table-column prop="driverInfo.driverPhoneNumber" label="手机号" align="center">
+					</el-table-column>
 				</el-table-column>
-				<el-table-column prop="carInfo.driverName" label="司机姓名" width="250" sortable>
-				</el-table-column>
-				<el-table-column inline-template :context="_self" label="操作" width="200">
-					<span>	
-						<el-button size="small" @click="handleEdit(row)">编辑</el-button>
-						<el-button type="danger" size="small" @click="handleDel(row)">删除</el-button>
-					</span>
+				<el-table-column prop="carInfo.driverName" label="车辆信息" align="center" >
+					<el-table-column prop="carInfo.carNumber" label="车牌号码"  align="center"   >
+					</el-table-column>
+					<el-table-column prop="carInfo.carType" label="车辆类型"  align="center"   >
+					</el-table-column>
+					<el-table-column prop="carInfo.carSeat" label="车座位数"  align="center"   >
+					</el-table-column>
 				</el-table-column>
 			</el-table>
-		</template>
+
 
 <!--分页-->
 <el-col :span="24" class="toolbar" style="padding-bottom:10px;">
-<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="pageParam.limit" :total="total" style="float:right;">
+<el-pagination layout="total,prev, pager, next" @current-change="handleCurrentChange" :page-size="pageParam.limit" :total="this.total" style="float:right;">
 </el-pagination>
 </el-col>
 
-<!--编辑界面-->
-<el-dialog :title="editFormTtile" v-model="editFormVisible" :close-on-click-modal="false">
-	<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-		<el-form-item label="车牌号" prop="carNumber">
-			<el-input v-model="editForm.carNumber" auto-complete="off"></el-input>
-		</el-form-item>
-		<el-form-item label="车辆类型">
-			<el-input v-model="editForm.carType" auto-complete="off"></el-input>
-		</el-form-item>
-		<el-form-item label="座位数">
-			<el-input-number v-model="editForm.carSeat" :min="0" :max="5"></el-input-number>
-		</el-form-item>
-		<el-form-item label="司机姓名">
-			<el-input v-model="editForm.driverName" auto-complete="off"></el-input>
-		</el-form-item>
-	</el-form>
-	<div slot="footer" class="dialog-footer">
-		<el-button @click.native="editFormVisible = false">取 消</el-button>
-		<el-button type="primary" @click.native="editSubmit" :loading="editLoading">{{btnEditText}}</el-button>
-	</div>
-</el-dialog>
 </section>
 </template>
 
 <script>
 	import util from '../../../common/util'
 	import NProgress from 'nprogress'
-	import { findCarInfoByMultiCondition,deleteCarInfoByCarId, updateCarInfoByCarId, addCarInfo } from '../../../api/api';
+	import { findOrderInfoByMultiCondition} from '../../../api/api';
+    import moment from 'moment'
 
 	export default {
 		data() {
 			return {
 				filters: {
 					driverName: '',
-					passengerPhone: ''
+                    passengerPhoneNumber: ''
 				},
-				cars: [],
+                orderList: [],
 				total: 0,
 				page: 1,
 				listLoading: false,
-				editFormVisible: false,//编辑界面显是否显示
-				editFormTtile: '编辑',//编辑界面标题
-				//编辑界面数据
-				editForm: {
-					id: 0,
-					carNumber: '',
-					carType: '',
-					driverName: ''
-				},
 				editLoading: false,
-				btnEditText: '提 交',
-				editFormRules: {
-					name: [
-						{ required: true, message: '请输入姓名', trigger: 'blur' }
-					]
-				},
 				pageParam: {
-					sort: "car_id",  
+					sort: "order_id",
 					order: "desc",
 					limit: 10,
 				}
@@ -113,151 +89,47 @@
 		methods: {
 			handleCurrentChange(val) {
 				this.page = val;
-				this.getCars();
+				this.getOrder();
 			},
+            dateFormat:function(row, column) {
+                var date = row[column.property];
+                if (date == undefined) {
+                    return "";
+                }
+                return moment(date).format("YYYY-MM-DD HH:mm:ss");
+            },
 			//获取用户列表
-			getCars() {
+			getOrder : function ()  {
 				let param = {
-					sort: this.pageParam.sort,  
-					order: this.pageParam.order,  
-					limit: this.pageParam.limit,  
+					sort: this.pageParam.sort,
+					order: this.pageParam.order,
+					limit: this.pageParam.limit,
 					offset: (this.page-1)*10,
-					carInfo: {
-						carType: this.filters.carType,
-						carNumber: this.filters.carNumber
-					}
+					    driverInfo:{
+					        driverName: this.filters.driverName,
+						},
+                        passenger:{
+                            passengerPhoneNumber: this.filters.passengerPhoneNumber
+						}
+
 				}
 				this.listLoading = true;
 				NProgress.start();
-				findCarInfoByMultiCondition(param).then((res) => {
+                findOrderInfoByMultiCondition(param).then((res) => {
 					if(res.status === 1){
 						this.total = res.result.count;
-						this.cars = res.result.carInfos;
-						
+						this.orderList = res.result.orderList;
+                        //console.log(this.orderList);
 						this.listLoading = false;
 						NProgress.done();
 					}
 				});
 			},
-			//删除
-			handleDel: function (row) {
-				//console.log(row);
-				var _this = this;
-				this.$confirm('确认删除该记录吗?', '提示', {
-					//type: 'warning'
-				}).then(() => {
-					_this.listLoading = true;
-					NProgress.start();
-					let param = new FormData();
-					param.append("carId", row.carInfo.carId);
-					deleteCarInfoByCarId(param).then((res) => {
-						if(res.status === 1){
-							_this.listLoading = false;
-							NProgress.done();
-							_this.$notify({
-								title: '成功',
-								message: '删除成功',
-								type: 'success'
-							});
-							_this.getCars();
-						}
-					});
-
-				}).catch(() => {
-
-				});
-			},
-			//显示编辑界面
-			handleEdit: function (row) {
-				console.log("row,",row)
-				this.editFormVisible = true;
-				this.editFormTtile = '编辑';
-				this.editForm.id = row.id;
-				this.editForm.carId = row.carInfo.carId;
-				this.editForm.carNumber = row.carInfo.carNumber;
-				this.editForm.carType = row.carInfo.carType;
-				this.editForm.carSeat = row.carInfo.carSeat;
-			},
-			//编辑 or 新增
-			editSubmit: function () {
-				var _this = this;
-
-				_this.$refs.editForm.validate((valid) => {
-					if (valid) {
-
-						_this.$confirm('确认提交吗？', '提示', {}).then(() => {
-							_this.editLoading = true;
-							NProgress.start();
-							_this.btnEditText = '提交中';
-
-							if (_this.editForm.id == 0) {
-								//新增
-								let param = {
-									carNumber: _this.editForm.carNumber,
-									carType: _this.editForm.carType
-								};
-								addCarInfo(param).then((res) => {
-									if(res.status === 1){
-										_this.editLoading = false;
-										NProgress.done();
-										_this.btnEditText = '提 交';
-										_this.$notify({
-											title: '成功',
-											message: '提交成功',
-											type: 'success'
-										});
-										_this.editFormVisible = false;
-										_this.getCars();
-									}
-								});
-							} else {
-								//编辑
-								let param = {
-									carId: _this.editForm.carId,
-									carNumber: _this.editForm.carNumber,
-									carType: _this.editForm.carType,
-									carSeat: _this.editForm.carSeat
-								};
-								updateCarInfoByCarId(param).then((res) => {
-									console.log("!!!",res)
-									if(res.status === 1){
-										_this.editLoading = false;
-										NProgress.done();
-										_this.btnEditText = '提 交';
-										_this.$notify({
-											title: '成功',
-											message: '提交成功',
-											type: 'success'
-										});
-										_this.editFormVisible = false;
-										_this.getCars();
-									}
-								});
-
-							}
-
-						});
-
-					}
-				});
-
-			},
-			//显示新增界面
-			handleAdd: function () {
-				var _this = this;
-
-				this.editFormVisible = true;
-				this.editFormTtile = '新增';
-				this.editForm.id = 0
-				this.editForm.carId = "";
-				this.editForm.carNumber = "";
-				this.editForm.carType = "";
-				this.editForm.carSeat = 0;
-			}
-		},
+        },
 		mounted() {
-			this.getCars();
+			 this.getOrder();
 		}
+
 	}
 </script>
 
