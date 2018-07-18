@@ -52,18 +52,21 @@
 
 		<!--列表-->
 		<template>
-			<el-table :data="infolist" highlight-current-row v-loading="listLoading" style="width: 100%;">
-				<el-table-column prop="logId" label="日志编号" sortable>
+			<el-table :data="infolist" highlight-current-row v-loading="listLoading" style="width: 100%;" stripe
+					  border>
+				<el-table-column type="index" width="60">
 				</el-table-column>
-				<el-table-column prop="action" label="用户行为" sortable>
+				<el-table-column prop="logId" label="日志编号" sortable  align="center">
 				</el-table-column>
-				<el-table-column prop="roleId" label="用户角色" :formatter="formatRole" sortable>
+				<el-table-column prop="action" label="用户行为" sortable  align="center">
 				</el-table-column>
-				<el-table-column prop="logTime" label="行为时间" :formatter="formatTime" sortable>
+				<el-table-column prop="roleId" label="用户角色" :formatter="formatRole" sortable  align="center">
 				</el-table-column>
-				<el-table-column prop="orderId" label="订单编号"  sortable>
+				<el-table-column prop="logTime" label="行为时间" :formatter="formatTime" sortable  align="center">
 				</el-table-column>
-				<el-table-column inline-template :context="_self" label="操作" >
+				<el-table-column prop="orderId" label="订单编号"  sortable  align="center">
+				</el-table-column>
+				<el-table-column inline-template :context="_self" label="操作"  align="center">
 					<span>
 						<el-button size="small" @click="handleEdit(row)">查看详情</el-button>
 						<!-- <el-button type="danger" size="small" @click="handleDel(row)">删除</el-button> -->
@@ -74,7 +77,7 @@
 
 <!--分页-->
 <el-col :span="24" class="toolbar" style="padding-bottom:10px;">
-<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="filters.limit" :total="total" style="float:right;">
+<el-pagination layout="total,prev, pager, next" @current-change="handleCurrentChange" :page-size="filters.limit" :total="total" style="float:right;">
 </el-pagination>
 </el-col>
 
