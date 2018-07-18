@@ -28,7 +28,6 @@
 				<el-upload
 						class="upload-demo"
 						ref="upload"
-                        multiple="false"
 						action="http://localhost:8000/admin/driver/importExcel"
 						:on-preview="handlePreview"
 						:on-remove="handleRemove"
@@ -135,7 +134,9 @@
             <el-form :model="editForm1" :rules="editFormRules1" ref="editForm1" label-width="100px">
                 <el-form-item label="搜索">
                 <el-button type="primary" v-on:click="getCar">查询</el-button>
+
                 <el-col :span="5">
+					<el-col class="line" :span="2">&nbsp;&nbsp;&nbsp;&nbsp;</el-col>
                     <el-input v-model="carForm.carNumber" placeholder="请输入车牌号码" ></el-input>
                 </el-col>
             </el-form-item>
@@ -365,7 +366,7 @@
                     .then((response) => {
                         this.$notify({
                             title: '成功',
-                            message: '导出信息表成功文件位置存放在D盘根目录下',
+                            message: '导出信息表成功，文件存放在D盘微公交系统文件夹下',
                             type: 'success'
                         });
                     }).catch((error) => {

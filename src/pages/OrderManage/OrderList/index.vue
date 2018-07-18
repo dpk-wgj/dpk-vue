@@ -91,13 +91,12 @@
 				this.page = val;
 				this.getOrder();
 			},
-            dateFormat:function(row, column) {
-                var date = row[column.property];
-                if (date == undefined) {
-                    return "";
-                }
-                return moment(date).format("YYYY-MM-DD HH:mm:ss");
-            },
+            // formatTime: function(row, column) {
+            //     var d = new Date(row.orderList.startTime);
+            //     var times = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+            //     return times;
+            //
+            // },
 			//获取用户列表
 			getOrder : function ()  {
 				let param = {
