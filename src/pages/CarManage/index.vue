@@ -26,7 +26,7 @@
 				</el-table-column>
 				<el-table-column prop="carInfo.carNumber" label="车牌号" align="center"  sortable>
 				</el-table-column>
-				<el-table-column prop="carInfo.carType" label="车辆类型"  >
+				<el-table-column prop="carInfo.carType" label="车辆类型"  align="center" >
 				</el-table-column>
 				<el-table-column prop="carInfo.carSeat" label="座位数" align="center"  sortable>
 				</el-table-column>
@@ -188,7 +188,15 @@
 
 				_this.$refs.editForm.validate((valid) => {
 					if (valid) {
+                        if( _this.editForm.carNumber == '' ||_this.editForm.carType == '' || _this.editForm.carSeat == '' ){
+                            _this.$notify({
+                                title: '失败',
+                                message: '车辆信息为空，编辑或者新增车辆信息失败！！',
+                                type: 'error'
+                            });
 
+                        }
+                        else{
 						_this.$confirm('确认提交吗？', '提示', {}).then(() => {
 							_this.editLoading = true;
 							NProgress.start();
@@ -241,7 +249,7 @@
 
 							}
 
-						});
+						});}
 
 					}
 				});

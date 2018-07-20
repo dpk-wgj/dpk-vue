@@ -50,75 +50,66 @@ const routes = [
     hidden: true//不显示在导航中
   },
   {
-    path: '/',
+    path: '/carManage',
     component: Home,
     name: '',
-    iconCls: 'fa fa-bar-chart',
+    iconCls: 'fa fa-cogs',
     leaf: true,//只有一个节点
     children: [
-      { path: '/carManage', component: CarManage, name: '车辆管理' }
+      { path: '/carManage', component: CarManage, name: '车辆管理', }
     ]
   },
+    {
+        path: '/',
+        component: Home,
+        name: '',
+        iconCls: 'fa fa-address-card',
+        leaf: true,//只有一个节点
+        children: [
+            { path: '/driver', component: DriverInfo, name: '司机管理' }
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '',
+        iconCls: 'fa fa-users',
+        leaf: true,//只有一个节点
+        children: [
+            { path: '/adminInfo', component: AdminInfo, name: '用户管理' }
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '',
+        leaf: true,//只有一个节点
+        iconCls: 'fa fa-reorder',//图标样式class
+        children: [
+            { path: '/logInfo', component: LogInfo, name: '日志管理' },
+
+        ]
+    },
   {
     path: '/',
     component: Home,
     name: '订单管理',
-    iconCls: 'fa fa-bar-chart',
+    iconCls: 'fa fa-money',
     children: [
       { path: '/order/list', component: OrderList, name: '订单检索' },
       { path: '/order/complaint', component: OrderComplaint, name: '投诉处理' },
       // { path: '/order/statistics', component: OrderStatistics, name: '数据统计' }
     ]
   },
-  {
-    path: '/',
-    component: Home,
-    name: '管理用户管理',
-    iconCls: 'fa fa-bar-chart',
-    children: [
-      { path: '/adminInfo', component: AdminInfo, name: '管理用户管理' }
-    ]
-  },
+
   {
     path: '/',
     component: Home,
     name: '车辆定位',
-    iconCls: 'fa fa-bar-chart',
+    iconCls: 'fa fa-truck',
     children: [
       { path: '/CarLocation', component: CarLocation, name: '位置查询' },
       { path: '/CarTrack', component: CarTrack, name: '历史轨迹查询' }
-    ]
-  },
-  //{ path: '/main', component: Main },
-  {
-    path: '/',
-    component: Home,
-    name: '用户日志管理',
-    iconCls: 'el-icon-message',//图标样式class
-    children: [
-      //{ path: '/main', component: Main },
-      { path: '/logInfo', component: LogInfo, name: '用户行为日志' },
-      // { path: '/form', component: Form, name: 'Form' },
-      // { path: '/user', component: user, name: '列表' },
-    ]
-  },
-  // {
-  //   path: '/',
-  //   component: Home,
-  //   name: '导航二',
-  //   iconCls: 'fa fa-id-card-o',
-  //   children: [
-  //     { path: '/page4', component: Page4, name: '页面4' },
-  //     { path: '/page5', component: Page5, name: '页面5' }
-  //   ]
-  // },
-  {
-    path: '/',
-    component: Home,
-    name: '司机管理',
-    iconCls: 'fa fa-address-card',
-    children: [
-      { path: '/driver', component: DriverInfo, name: '司机管理' }
     ]
   },
   {

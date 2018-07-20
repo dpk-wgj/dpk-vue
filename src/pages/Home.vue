@@ -103,9 +103,9 @@
 		},
 		mounted() {
 			if(!window.localStorage.getItem("token")){
-                  this.$router.push({ path: '/login' });
-
+                  this.$router.push({ path: '/carManage' });
 			}
+            this.$router.push('/carManage');
 		},
 		methods: {
 			onSubmit() {
