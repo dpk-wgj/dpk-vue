@@ -3,7 +3,7 @@
 		<!--工具条-->
 		<el-col :span="24" class="toolbar">
 			<el-form :inline="true" :model="filters">
-				<el-form-item label="投诉发起时间">
+				<el-form-item label="投诉发起时间(时间和日期必须都选)">
 					<el-col :span="11">
 						<el-date-picker type="date" placeholder="选择日期" v-model="trackDate.startYmd" style="width: 100%;" ></el-date-picker>
 					</el-col>
@@ -22,9 +22,14 @@
 					<!--</el-col>-->
 				<!--</el-form-item>-->
 				<!--<br>-->
-				<el-form-item>
-					<el-input v-model="filters.complaintStatus" placeholder="投诉状态"></el-input>
-				</el-form-item>
+                <el-select v-model="filters.complaintStatus" placeholder="投诉状态" clearable>
+                    <el-option
+                            v-for="item in complaintStatusData"
+                            :key="item.complaintStatus"
+                            :label="item.roleName"
+                            :value="item.complaintStatus">
+                    </el-option>
+                </el-select>
 				<el-form-item>
 					<el-input v-model="filters.passengerId" type="number" placeholder="投诉人编号"></el-input>
 				</el-form-item>
@@ -36,11 +41,19 @@
 
 		<!--列表-->
 		<template>
-			<el-table :data="complaintlist" highlight-current-row v-loading="listLoading" style="width: 100%;" stripe
+			<el-table :data="complaintlist" highlight-current-row v-loading="listLoading" style="width: 100%;"
+                      stripe
 					  border>
 				<el-table-column type="index" width="60">
 				</el-table-column>
-				<el-table-column prop="complaintStatus" label="投诉状态"  sortable  align="center">
+				<el-table-column  label="投诉状态"  sortable  align="center">
+                    <template slot-scope="scope" >
+                        <div>
+                            <i v-if="scope.row.complaintStatus==1"  style="color:#909399;">未受理</i>
+                            <i v-if="scope.row.complaintStatus==2"  style="color:#F56C6C;">未反馈</i>
+                            <i v-else-if="scope.row.complaintStatus==3"  style="color:#67C23A;"> 反馈</i>
+                        </div>
+                    </template>
 				</el-table-column>
 				<el-table-column prop="complaintId" label="投诉编号" sortable  align="center">
 				</el-table-column>
@@ -52,15 +65,26 @@
 				</el-table-column>
 				<el-table-column prop="complaintCreateTime" label="投诉发起时间" align="center" :formatter="formatTime"sortable width="200px">
 				</el-table-column>
-				<el-table-column prop="complaintFeedbackTime" label="投诉反馈时间"   align="center"  width="200px" sortable>
+				<el-table-column prop="complaintFeedbackTime" label="投诉反馈时间"   align="center":formatter="formatTime1"  width="200px" sortable>
 				</el-table-column>
-				<el-table-column prop="complaintFeedback" label="投诉反馈内容"   align="center">
+				<el-table-column label="投诉反馈内容"   align="center">
+                    <template slot-scope="scope">
+                    <i v-if="scope.row.complaintFeedback !=null ">
+                            <el-popover placement="top-start" title="反馈内容" width="150" trigger="hover">
+                                <slot>{{scope.row.complaintFeedback }}</slot>
+                                <el-button slot="reference">反馈内容</el-button>
+                             </el-popover>
+
+                            </i>
+                    </template>
 				</el-table-column>
-				<el-table-column inline-template :context="_self" label="操作"  align="center">
-					<span>
-						<el-button size="small" @click="handleEdit(row)">受理</el-button>
-						 <el-button type="danger" size="small" @click="handleDel(row)">反馈</el-button>
-					</span>
+				<el-table-column  label="操作"  align="center" width="180">
+                    <template slot-scope="scope">
+						<el-button  size="small" type="primary" @click="handleEdit(scope.row)" v-if="scope.row.complaintStatus ==1 ">受理</el-button>
+                       <el-button   size="small" type="primary" @click="handleEdit(scope.row)"  v-if="scope.row.complaintStatus >1 "disabled>受理</el-button>
+                       <el-button size="small" type="danger"  @click="handleDel(scope.row)" v-if="scope.row.complaintStatus ==2 ">反馈</el-button>
+                        <el-button size="small" type="danger"  @click="handleDel(scope.row)" v-if="scope.row.complaintStatus >0 && scope.row.complaintStatus !=2 " disabled>反馈</el-button>
+                    </template>
 				</el-table-column>
 			</el-table>
 		</template>
@@ -71,46 +95,34 @@
 			</el-pagination>
 		</el-col>
 
-		<!--编辑界面-->
-		<!--<el-dialog :title="editFormTtile" v-model="editFormVisible" :close-on-click-modal="false">-->
-			<!--<el-form :model="editForm" label-width="80px" ref="editForm">-->
-				<!--<el-form-item label="日志编号">-->
-					<!--<el-input v-model="editForm.logId" auto-complete="off" disabled ></el-input>-->
-				<!--</el-form-item>-->
-				<!--<el-form-item label="订单编号">-->
-					<!--<el-input v-model="editForm.orderId" auto-complete="off" disabled></el-input>-->
-				<!--</el-form-item>-->
-				<!--<el-form-item label="用户行为">-->
-					<!--<el-input v-model="editForm.action" auto-complete="off" disabled></el-input>-->
-				<!--</el-form-item>-->
-				<!--<el-form-item label="用户角色">-->
-					<!--<el-input v-model="editForm.roleId" auto-complete="off" disabled></el-input>-->
-				<!--</el-form-item>-->
-				<!--<el-form-item label="行为时间">-->
-					<!--<el-input v-model="editForm.logTime" auto-complete="off" disabled></el-input>-->
-				<!--</el-form-item>-->
-			<!--</el-form>-->
-			<!--<div slot="footer" class="dialog-footer">-->
-				<!--<el-button @click.native="editFormVisible = false">关 闭</el-button>-->
-			<!--</div>-->
-		<!--</el-dialog>-->
 	</section>
 </template>
 
 <script>
-    // import util from '../../common/util'
+     //import util from '../../common/util'
     import NProgress from 'nprogress'
-    import {findComplaintInfoByMultiCondition} from "../../../api/api";
-    // import { formatDate } from '../../common/util'
+    import {findComplaintInfoByMultiCondition,updateComplaintInfoByComplaintId} from "../../../api/api";
+     //import { formatDate } from '../../common/util'
 
     export default {
         data() {
             return {
+                loading:true,
                 filters: {
                     complaintStatus:'',
                     passengerId:'',
                     complaintCreateTime:'',
                 },
+                complaintStatusData: [{
+                    complaintStatus: 1,
+                    roleName: '未受理'
+                },{
+                    complaintStatus: 2,
+                    roleName: '未反馈'
+                },{
+                    complaintStatus: 3,
+                    roleName: '反馈'
+                }],
                 trackDate: {
                     startYmd: null,
                     startHms: null,
@@ -143,21 +155,31 @@
         },
         methods: {
 
-            formatTime: function(row, column) {
+            formatTime: function (row, column) {
+                if (row.complaintCreateTime != null) {
                 var d = new Date(row.complaintCreateTime);
                 var times = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
                 return times;
-
+            }
             },
+            formatTime1: function (row, column) {
+                if (row.complaintFeedbackTime != null) {
+                    var d = new Date(row.complaintFeedbackTime);
+                    var times = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+                    return times;
+                }
+     },
+            formatDate(date, flag) {
 
-            formatDate (date, flag) {
-                if (date != null){
-                    if(flag===0){//格式化年月日
+                if (date != null) {
+                    var date = new Date(date);
+                    if (flag === 0) {//格式化年月日
                         let y = date.getFullYear();
                         let m = date.getMonth() + 1;
                         let d = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
                         return `${y}-${m}-${d}`
-                    }else{//格式化时分秒
+                    } else {//格式化时分秒
+                        var date = new Date(date);
                         let h = date.getHours() < 10 ? "0" + date.getHours() : date.getHours()
                         let m = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
                         let s = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
@@ -175,129 +197,117 @@
             },
             //获取投诉列表
             getComplaintInfoList() {
-                // let start =  this.formatDate(this.trackDate.startYmd, 0)+" "+this.formatDate(this.trackDate.startHms, 1)
-                // if(start == 'null null'){
-                //     start = ''
-                // }
-                let para = {
-                    sort: "complaint_status",
-                    order: "asc",
-                    offset: (this.page - 1) * 10,
-                    limit: 10,
-                    // startTime: start,
-                    complaintInfo: {
-                        complaintStatus: this.filters.complaintStatus,
-                        passengerId:this.filters.passengerId,
-                    },
-                };
-                this.listLoading = true;
-                NProgress.start();
-                findComplaintInfoByMultiCondition(para).then((res) => {
-                    this.total = res.result.count;
-                    this.complaintlist = res.result.complaintInfos;
-                    this.listLoading = false;
-                    NProgress.done();
-                });
+                var start ='';
+                if(this.trackDate.startYmd!=null&&this.trackDate.startYmd!=''&&this.trackDate.startHms!=''&&this.trackDate.startHms!=null)
+                {
+                    start = this.formatDate(this.trackDate.startYmd, 0) + " " + this.formatDate(this.trackDate.startHms, 1)
+                    if (start == 'null null') {
+                        start = '';
+                    }
+                }
+                    else{
+                        start = '';
+                }
+
+                    let para = {
+                        sort: "complaint_status",
+                        order: "asc",
+                        offset: (this.page - 1) * 10,
+                        limit: 10,
+                        startTime: start,
+                        complaintInfo: {
+                            complaintStatus: this.filters.complaintStatus,
+                            passengerId: this.filters.passengerId,
+                            complaintCreateTime: this.filters.complaintCreateTime,
+                        },
+                    };
+                    console.log(para)
+                    this.listLoading = true;
+                    NProgress.start();
+                    findComplaintInfoByMultiCondition(para).then((res) => {
+                        this.total = res.result.count;
+                        this.complaintlist = res.result.complaintInfos;
+                        this.listLoading = false;
+                        NProgress.done();
+                    });
+
             },
+            handleEdit(row) {
+                this.$confirm('将对此投诉进行受理, 是否进行?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }).then(() => {
+                    let param = {
 
+                            complaintId: row.complaintId,
+                            complaintStatus:row.complaintStatus,
 
-            // //显示编辑界面
-            // handleEdit: function (row) {
-            //
-            //     console.log("row",row.logId)
-            //     var param = new FormData()
-            //     param.append('logInfoId', row.logId)
-            //     getLogInfoByLogId(param).then((res) => {
-            //         if(res.status === 1){
-            //             console.log(res.result)
-            //             this.editFormVisible = true;
-            //             this.editFormTtile = '查看详情';
-            //             this.editForm.logId = row.logId;
-            //             this.editForm.action = row.action;
-            //             if(row.roleId==1){
-            //                 this.editForm.roleId = '司机';
-            //             } else {
-            //                 this.editForm.roleId = '乘客';
-            //             }
-            //             var d = new Date(row.logTime);
-            //             var times = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
-            //             this.editForm.logTime = times;
-            //             this.editForm.orderId = row.orderId;
-            //         }
-            //     });
-            // },
-            //编辑 or 新增
-            // editSubmit: function (row) {
-                // var _this = this;
+                    };
+                    console.log(param)
+                    updateComplaintInfoByComplaintId(param)
+                        .then((response) => {
+                            this.getComplaintInfoList();
+                            this.$message({
+                                type: 'success',
+                                message: '受理成功'
+                            });
+                        }).catch((error) => {
+                        this.loading = false;
+                        this.$notify.error({
+                            title: '错误',
+                            message: error.data.message,
+                            duration: 2000
+                        });
+                    })
+                    this.loading = false;
+                }).catch(() => {
+                    this.loading = false;
+                    this.$message({
+                        type: 'info',
+                        message: '已取消受理'
+                    });
+                });
 
-                // _this.$refs.editForm.validate((valid) => {
-                // 	if (valid) {
+            },
+            handleDel(row) {
+                this.$prompt('请输入反馈信息', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^\S/,
+                    inputErrorMessage: '反馈内容不能为空'
+                }).then(({ value }) => {
+                    let param = {
+                        complaintId: row.complaintId,
+                        complaintStatus: row.complaintStatus,
+                        complaintFeedback: value
+                    };
+                    updateComplaintInfoByComplaintId(param).then((response) => {
+                        this.getComplaintInfoList();
+                        this.$message({
+                            type: 'success',
+                            message: '反馈成功'
+                        });
+                    }).catch((error) => {
+                        this.$notify.error({
+                            title: '错误',
+                            message: error.data.message,
+                            duration: 2000
+                        });
+                    })
+                })
+                        .catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '取消反馈'
+                        });
+                    });
 
-                // 		_this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                // 			_this.editLoading = true;
-                // 			NProgress.start();
-                // 			_this.btnEditText = '提交中';
+            }
 
-                // if (_this.editForm.id == 0) {
-                // 	//新增
-                // 	let para = {
-                // 		name: _this.editForm.name,
-                // 		sex: _this.editForm.sex,
-                // 		age: _this.editForm.age,
-                // 		birth: _this.editForm.birth == '' ? '' : util.formatDate.format(new Date(_this.editForm.birth), 'yyyy-MM-dd'),
-                // 		addr: _this.editForm.addr,
-                // 	};
-                // 	addUser(para).then((res) => {
-                // 		_this.editLoading = false;
-                // 		NProgress.done();
-                // 		_this.btnEditText = '提 交';
-                // 		_this.$notify({
-                // 			title: '成功',
-                // 			message: '提交成功',
-                // 			type: 'success'
-                // 		});
-                // 		_this.editFormVisible = false;
-                // 		_this.getLogInfoList();
-                // 	});
-                // } else {
-                //编辑
-                // 				let para = {
-                // 					id: _this.editForm.id,
-                // 					name: _this.editForm.name,
-                // 					sex: _this.editForm.sex,
-                // 					age: _this.editForm.age,
-                // 					birth: _this.editForm.birth == '' ? '' : util.formatDate.format(new Date(_this.editForm.birth), 'yyyy-MM-dd'),
-                // 					addr: _this.editForm.addr,
-                // 				};
-                // 				editUser(para).then((res) => {
-                // 					_this.editLoading = false;
-                // 					NProgress.done();
-                // 					_this.btnEditText = '提 交';
-                // 					_this.$notify({
-                // 						title: '成功',
-                // 						message: '提交成功',
-                // 						type: 'success'
-                // 					});
-                // 					_this.editFormVisible = false;
-                // 					_this.getLogInfoList();
-                // 				});
-
-                // 			// }
-
-                // 		});
-
-                // 	}
-                // });
-        //         let param = {
-        //             carNumber: this.carNumber
-        //         }
-        //         getLogInfoByLogId(para).then((res) => {
-        //             if(res.status === 1){
-        //                 console.log(res.result)
-        //             }
-        //         });
-        //     },
         },
+
         mounted() {
             this.getComplaintInfoList();
         }

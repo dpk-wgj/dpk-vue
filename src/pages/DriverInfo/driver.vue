@@ -447,6 +447,8 @@
 
                         _this.$confirm('确认换车吗？', '提示', {}).then(() => {
                             _this.editLoading1 = true;
+
+
                             NProgress.start();
                             _this.btnEditText = '提交中';
                             let param = {

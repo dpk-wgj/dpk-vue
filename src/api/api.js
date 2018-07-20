@@ -81,7 +81,7 @@ export const getLogInfoByLogId = params => { return axios.post(`/admin/logInfo/g
 
 // 投诉订单管理
 export const findComplaintInfoByMultiCondition = params => { return axios.post(`/admin/complaintInfo/findComplaintInfoByMultiCondition`, params).then(res => res.data); };
-
+export const  updateComplaintInfoByComplaintId = params => { return axios.post(`/admin/complaintInfo/updateComplaintInfoByComplaintId`, params).then(res => res.data); };
 
 // export const getLocationInfoByDate = param => { return axios.post(`/admin/order/getLocationInfoByDate`, param).then(res => res.data); };
 

@@ -20,18 +20,19 @@
 
 		<!--列表-->
 		<template>
-			<el-table :data="cars" highlight-current-row v-loading="listLoading" style="width: 100%;">
-				<el-table-column type="index" width="60">
+			<el-table :data="cars" highlight-current-row v-loading="listLoading" style="width: 100%;"stripe
+					  border>
+				<el-table-column type="index" width="60" align="center"  >
 				</el-table-column>
-				<el-table-column prop="carInfo.carNumber" label="车牌号" width="250" sortable>
+				<el-table-column prop="carInfo.carNumber" label="车牌号" align="center"  sortable>
 				</el-table-column>
-				<el-table-column prop="carInfo.carType" label="车辆类型" width="250" sortable>
+				<el-table-column prop="carInfo.carType" label="车辆类型"  >
 				</el-table-column>
-				<el-table-column prop="carInfo.carSeat" label="座位数" width="250" sortable>
+				<el-table-column prop="carInfo.carSeat" label="座位数" align="center"  sortable>
 				</el-table-column>
-				<el-table-column prop="carInfo.driverName" label="司机姓名" width="250" sortable>
+				<el-table-column  prop="driverInfo.driverName" label="上岗司机姓名"  align="center"  >
 				</el-table-column>
-				<el-table-column inline-template :context="_self" label="操作" width="200">
+				<el-table-column inline-template :context="_self" label="操作" width="180"align="center"  >
 					<span>	
 						<el-button size="small" @click="handleEdit(row)">编辑</el-button>
 						<el-button type="danger" size="small" @click="handleDel(row)">删除</el-button>
@@ -58,9 +59,6 @@
 		<el-form-item label="座位数">
 			<el-input-number v-model="editForm.carSeat" :min="0" :max="5"></el-input-number>
 		</el-form-item>
-		<el-form-item label="司机姓名">
-			<el-input v-model="editForm.driverName" auto-complete="off"></el-input>
-		</el-form-item>
 	</el-form>
 	<div slot="footer" class="dialog-footer">
 		<el-button @click.native="editFormVisible = false">取 消</el-button>
@@ -82,7 +80,11 @@
 					carType: '',
 					carNumber: ''
 				},
-				cars: [],
+				cars: [{
+				    driverInfo:{
+				        driverName :''
+					}
+				}],
 				total: 0,
 				page: 1,
 				listLoading: false,
@@ -93,7 +95,7 @@
 					id: 0,
 					carNumber: '',
 					carType: '',
-					driverName: ''
+                    carSeat: ''
 				},
 				editLoading: false,
 				btnEditText: '提 交',
@@ -104,7 +106,7 @@
 				},
 				pageParam: {
 					sort: "car_id",  
-					order: "desc",
+					order: "asc",
 					limit: 10,
 				}
 
@@ -117,6 +119,7 @@
 			},
 			//获取用户列表
 			getCars() {
+			    var i;
 				let param = {
 					sort: this.pageParam.sort,  
 					order: this.pageParam.order,  
@@ -133,6 +136,7 @@
 					if(res.status === 1){
 						this.total = res.result.count;
 						this.cars = res.result.carInfos;
+                        console.log(this.cars);
 						this.listLoading = false;
 						NProgress.done();
 					}
@@ -143,7 +147,7 @@
 			handleDel: function (row) {
 				//console.log(row);
 				var _this = this;
-				this.$confirm('确认删除该记录吗?', '提示', {
+				this.$confirm('确认删除该车辆的信息吗?', '提示', {
 					//type: 'warning'
 				}).then(() => {
 					_this.listLoading = true;
@@ -194,7 +198,8 @@
 								//新增
 								let param = {
 									carNumber: _this.editForm.carNumber,
-									carType: _this.editForm.carType
+									carType: _this.editForm.carType,
+                                    carSeat: _this.editForm.carSeat
 								};
 								addCarInfo(param).then((res) => {
 									if(res.status === 1){
@@ -203,7 +208,7 @@
 										_this.btnEditText = '提 交';
 										_this.$notify({
 											title: '成功',
-											message: '提交成功',
+											message: '新增车辆成功',
 											type: 'success'
 										});
 										_this.editFormVisible = false;
@@ -226,7 +231,7 @@
 										_this.btnEditText = '提 交';
 										_this.$notify({
 											title: '成功',
-											message: '提交成功',
+											message: '编辑成功',
 											type: 'success'
 										});
 										_this.editFormVisible = false;
@@ -252,7 +257,7 @@
 				this.editForm.carId = "";
 				this.editForm.carNumber = "";
 				this.editForm.carType = "";
-				this.editForm.carSeat = 0;
+				this.editForm.carSeat = '';
 			}
 		},
 		mounted() {

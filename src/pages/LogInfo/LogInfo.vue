@@ -27,10 +27,7 @@
 				<el-form-item>
 					<el-input v-model="formData.logInfo.action" placeholder="用户行为"></el-input>
 				</el-form-item>
-				<!-- <el-form-item>
-					<el-input v-model="formData.logInfo.roleId" placeholder="用户角色"></el-input>
-				</el-form-item> -->
-				<el-select v-model="formData.logInfo.roleId" placeholder="用户角色">
+				<el-select v-model="formData.logInfo.roleId" placeholder="用户角色" clearable>
 					<el-option
 					v-for="item in roleData"
 					:key="item.roleId"
@@ -44,9 +41,6 @@
 				<el-form-item>
 					<el-button type="primary" @click="findLogInfo">查询</el-button>
 				</el-form-item>
-				<!-- <el-form-item>
-					<el-button type="primary" @click="handleAdd">新增</el-button>
-				</el-form-item> -->
 			</el-form>
 		</el-col>
 
@@ -69,7 +63,6 @@
 				<el-table-column inline-template :context="_self" label="操作"  align="center">
 					<span>
 						<el-button size="small" @click="handleEdit(row)">查看详情</el-button>
-						<!-- <el-button type="danger" size="small" @click="handleDel(row)">删除</el-button> -->
 					</span>
 				</el-table-column>
 			</el-table>
@@ -193,12 +186,14 @@
 
 			formatDate (date, flag) {
 				if (date != null){
+                    var date = new Date(date);
 					if(flag===0){//格式化年月日
 						let y = date.getFullYear();
 						let m = date.getMonth() + 1;
 						let d = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
 						return `${y}-${m}-${d}`
 					}else{//格式化时分秒
+                        var date = new Date(date);
 						let h = date.getHours() < 10 ? "0" + date.getHours() : date.getHours()
 						let m = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
 						let s = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
@@ -242,14 +237,24 @@
 			},
 			//查询
 			findLogInfo() {
-				let start =  this.formatDate(this.trackDate.startYmd, 0)+" "+this.formatDate(this.trackDate.startHms, 1)
-				if(start == 'null null'){
-					start = ''
-				}
-				let end =  this.formatDate(this.trackDate.endYmd, 0)+" "+this.formatDate(this.trackDate.endHms, 1)
-				if(end == 'null null'){
-					end = ''
-				}
+                var start='';
+                var end = '';
+                if(this.trackDate.startYmd!=null&&this.trackDate.startYmd!='') {
+                     start = this.formatDate(this.trackDate.startYmd, 0) + " " + this.formatDate(this.trackDate.startHms, 1)
+                    if (start == 'null null') {
+                        start = ''
+                    }
+                     end = this.formatDate(this.trackDate.endYmd, 0) + " " + this.formatDate(this.trackDate.endHms, 1)
+                    if (end == 'null null') {
+                        end = ''
+                    }
+                }  else{
+                    start = '';
+                    end = this.formatDate(this.trackDate.endYmd, 0) + " " + this.formatDate(this.trackDate.endHms, 1)
+                    if (end == 'null null') {
+                        end = ''
+                    }
+                }
 				let para = {
 					offset: (this.page - 1) * 10,
 					sort: this.filters.sort,
@@ -273,10 +278,7 @@
 					this.listLoading = false;
 					NProgress.done();
 				});
-				console.log("total",this.total)
 			},
-			
-		
 			//显示编辑界面
 			handleEdit: function (row) {
 				
@@ -304,66 +306,6 @@
 			},
 			//编辑 or 新增
 			editSubmit: function (row) {
-				// var _this = this;
-
-				// _this.$refs.editForm.validate((valid) => {
-				// 	if (valid) {
-
-				// 		_this.$confirm('确认提交吗？', '提示', {}).then(() => {
-				// 			_this.editLoading = true;
-				// 			NProgress.start();
-				// 			_this.btnEditText = '提交中';
-
-							// if (_this.editForm.id == 0) {
-							// 	//新增
-							// 	let para = {
-							// 		name: _this.editForm.name,
-							// 		sex: _this.editForm.sex,
-							// 		age: _this.editForm.age,
-							// 		birth: _this.editForm.birth == '' ? '' : util.formatDate.format(new Date(_this.editForm.birth), 'yyyy-MM-dd'),
-							// 		addr: _this.editForm.addr,
-							// 	};
-							// 	addUser(para).then((res) => {
-							// 		_this.editLoading = false;
-							// 		NProgress.done();
-							// 		_this.btnEditText = '提 交';
-							// 		_this.$notify({
-							// 			title: '成功',
-							// 			message: '提交成功',
-							// 			type: 'success'
-							// 		});
-							// 		_this.editFormVisible = false;
-							// 		_this.getLogInfoList();
-							// 	});
-							// } else {
-								//编辑
-				// 				let para = {
-				// 					id: _this.editForm.id,
-				// 					name: _this.editForm.name,
-				// 					sex: _this.editForm.sex,
-				// 					age: _this.editForm.age,
-				// 					birth: _this.editForm.birth == '' ? '' : util.formatDate.format(new Date(_this.editForm.birth), 'yyyy-MM-dd'),
-				// 					addr: _this.editForm.addr,
-				// 				};
-				// 				editUser(para).then((res) => {
-				// 					_this.editLoading = false;
-				// 					NProgress.done();
-				// 					_this.btnEditText = '提 交';
-				// 					_this.$notify({
-				// 						title: '成功',
-				// 						message: '提交成功',
-				// 						type: 'success'
-				// 					});
-				// 					_this.editFormVisible = false;
-				// 					_this.getLogInfoList();
-				// 				});
-
-				// 			// }
-
-				// 		});
-
-				// 	}
-				// });
 				let param = {
                 carNumber: this.carNumber
             	}
@@ -373,20 +315,6 @@
 					}
 				});
 			},
-			//显示新增界面
-			// handleAdd: function () {
-			// 	var _this = this;
-
-			// 	this.editFormVisible = true;
-			// 	this.editFormTtile = '新增';
-
-			// 	this.editForm.id = 0;
-			// 	this.editForm.name = '';
-			// 	this.editForm.sex = 1;
-			// 	this.editForm.age = 0;
-			// 	this.editForm.birth = '';
-			// 	this.editForm.addr = '';
-			// }
 		},
 		mounted() {
 			this.getLogInfoList();

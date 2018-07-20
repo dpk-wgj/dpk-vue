@@ -2,7 +2,7 @@
 	<section>
 		<!--工具条-->
 		<el-col :span="24" class="toolbar">
-			<el-form :inline="true" :model="filters">
+			<el-form :inline="true" :model="filters" >
 				<el-form-item>
 					<el-input v-model="filters.driverName" placeholder="司机姓名"></el-input>
 				</el-form-item>
@@ -24,9 +24,9 @@
 				</el-table-column>
 				<el-table-column prop="orderInfo.orderId" label="订单Id" align="center" sortable >
 				</el-table-column>
-                <el-table-column prop="orderInfo.startTime" label="订单创建时间"  align="center" sortable width="200px">
+                <el-table-column prop="orderInfo.startTime" label="订单创建时间"  align="center" :formatter="formatTime" sortable width="200px">
                 </el-table-column>
-                <el-table-column prop="orderInfo.endTime" label="订单结束时间"   align="center"  width="200px" sortable>
+                <el-table-column prop="orderInfo.endTime" label="订单结束时间"   align="center"  :formatter="formatTime1" width="200px" sortable>
                 </el-table-column>
 				<el-table-column label="乘客信息" align="center">
 					<el-table-column prop="passenger.passengerWxId" label="微信号" align="center" >
@@ -86,17 +86,24 @@
 
 			}
 		},
+
 		methods: {
 			handleCurrentChange(val) {
 				this.page = val;
 				this.getOrder();
 			},
-            // formatTime: function(row, column) {
-            //     var d = new Date(row.orderList.startTime);
-            //     var times = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
-            //     return times;
-            //
-            // },
+            formatTime: function(row, column) {
+                var d = new Date(row.orderInfo.startTime);
+                var times = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+                return times;
+
+            },
+            formatTime1: function(row, column) {
+                var d = new Date(row.orderInfo.endTime);
+                var times = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+                return times;
+
+            },
 			//获取用户列表
 			getOrder : function ()  {
 				let param = {
