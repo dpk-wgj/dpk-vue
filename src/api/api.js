@@ -27,7 +27,17 @@ export const addUser = params => { return axios.get(`${base}/user/add`, { params
 
 
 // 管理员
-export const getUserInfoById = params => { return axios.get(`/api/getUserInfoById/${params.userId}`).then(res => res.data); };
+export const getUserInfoById = params => { return axios.get(`/admin/getUserInfoById/${params.userId}`).then(res => res.data); };
+
+export const getAllAdminInfo = params => { return axios.post(`/admin/getAllAdminInfo`, params).then(res => res.data); };
+
+// export const getAllAdminByUsername = params => { return axios.post(`/admin/getAllAdminByUsername`, params).then(res => res.data); };
+
+export const deleteAdminInfoById = params => { return axios.post(`/admin/deleteAdminInfoById`, params).then(res => res.data); };
+
+export const addAdminInfo = params => { return axios.post(`/admin/addAdminInfo`, params).then(res => res.data); };
+
+export const updateAdminInfo = params => { return axios.post(`/admin/updateAdminInfo`, params).then(res => res.data); };
 
 export const adminLogin = params => { 
     return axios.post(`/public/driver/login`, params).then(res => {
@@ -39,6 +49,19 @@ export const adminLogin = params => {
     }); 
 };
 
+//管理用户分组
+
+// export const getAdminGroupById = params => { return axios.post(`/admin/AdminGroup/getAdminGroupById`, params).then(res => res.data); };
+
+// export const getAdminGroupByName = params => { return axios.post(`/admin/AdminGroup/getAdminGroupByName`, params).then(res => res.data); };
+
+export const deleteAdminGroup = params => { return axios.post(`/admin/AdminGroup/deleteAdminGroup`, params).then(res => res.data); };
+
+export const addAdminGroup = params => { return axios.post(`/admin/AdminGroup/addAdminGroup`, params).then(res => res.data); };
+
+export const updateAdminGroupById = params => { return axios.post(`/admin/AdminGroup/updateAdminGroupById`, params).then(res => res.data); };
+
+export const getAllAdminGroup = params => { return axios.post(`/admin/AdminGroup/getAllAdminGroup`, params).then(res => res.data); };
 
 //车辆
 export const getCarInfoByCarId = params => { return axios.get(`/admin/car/getCarInfoByCarId/${params.carId}`).then(res => res.data); };

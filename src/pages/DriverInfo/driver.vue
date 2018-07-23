@@ -362,13 +362,16 @@
                 }
             },
             getExcel() {
-                makeExcel()
-                    .then((response) => {
+                this.$confirm('确认导出司机信息报表吗？', '提示', {}).then(() => {
+                        NProgress.start();
+                        this.btnEditText = '提交中';
+                makeExcel().then((response) => {
                         this.$notify({
                             title: '成功',
                             message: '导出信息表成功，文件存放在D盘微公交系统文件夹下',
                             type: 'success'
                         });
+                    NProgress.done();
                     }).catch((error) => {
                     this.$message.error(error.data.message);
                     this.$notify({
@@ -376,7 +379,9 @@
                         message: '导出信息表失败',
                         type: 'error'
                     });
+                    NProgress.done();
                 })
+					});
             },
             // //删除
             handleDel: function (row) {
@@ -447,8 +452,6 @@
 
                         _this.$confirm('确认换车吗？', '提示', {}).then(() => {
                             _this.editLoading1 = true;
-
-
                             NProgress.start();
                             _this.btnEditText = '提交中';
                             let param = {

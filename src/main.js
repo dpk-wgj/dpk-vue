@@ -19,6 +19,7 @@ import LogInfo from './pages/LogInfo/LogInfo.vue'
 import DriverInfo from './pages/DriverInfo/driver.vue'
 import CarLocation from './pages/CarLocationInfo/CarLocation/index.vue'
 import CarTrack from './pages/CarLocationInfo/CarTrack/index.vue'
+import AdminGroup from './pages/AdminInfo/AdminGroup/AdminGroup.vue'
 import AdminInfo from './pages/AdminInfo/index.vue'
 import CarManage from './pages/CarManage/index.vue'
 import OrderList from './pages/OrderManage/OrderList/index.vue'
@@ -42,6 +43,7 @@ Vue.use(VueRouter)
 Vue.use(Vuex)
 
 NProgress.configure({ showSpinner: false });
+
 
 const routes = [
   {
@@ -73,21 +75,22 @@ const routes = [
         path: '/',
         component: Home,
         name: '',
-        iconCls: 'fa fa-users',
-        leaf: true,//只有一个节点
-        children: [
-            { path: '/adminInfo', component: AdminInfo, name: '用户管理' }
-        ]
-    },
-    {
-        path: '/',
-        component: Home,
-        name: '',
         leaf: true,//只有一个节点
         iconCls: 'fa fa-reorder',//图标样式class
         children: [
             { path: '/logInfo', component: LogInfo, name: '日志管理' },
 
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '用户管理',
+        iconCls: 'fa fa-users',
+        //leaf: true,//只有一个节点
+        children: [
+            { path: '/adminInfo', component: AdminInfo, name: '人员管理' },
+            { path: '/adminGroup', component: AdminGroup, name: '分组管理' }
         ]
     },
   {
