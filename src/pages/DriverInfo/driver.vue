@@ -133,12 +133,12 @@
             <el-row v-loading = "editLoading1">
             <el-form :model="editForm1" :rules="editFormRules1" ref="editForm1" label-width="100px">
                 <el-form-item label="搜索">
-                <el-button type="primary" v-on:click="getCar">查询</el-button>
 
                 <el-col :span="5">
-					<el-col class="line" :span="2">&nbsp;&nbsp;&nbsp;&nbsp;</el-col>
                     <el-input v-model="carForm.carNumber" placeholder="请输入车牌号码" ></el-input>
                 </el-col>
+					<el-col class="line" :span="2">&nbsp;</el-col>
+					<el-button type="primary" v-on:click="getCar">查询</el-button>
             </el-form-item>
                 <el-form-item label="车辆Id" prop="carId">
                     <el-col :span="5">
@@ -362,13 +362,16 @@
                 }
             },
             getExcel() {
-                makeExcel()
-                    .then((response) => {
+                this.$confirm('确认导出司机信息报表吗？', '提示', {}).then(() => {
+                        NProgress.start();
+                        this.btnEditText = '提交中';
+                makeExcel().then((response) => {
                         this.$notify({
                             title: '成功',
                             message: '导出信息表成功，文件存放在D盘微公交系统文件夹下',
                             type: 'success'
                         });
+                    NProgress.done();
                     }).catch((error) => {
                     this.$message.error(error.data.message);
                     this.$notify({
@@ -376,7 +379,9 @@
                         message: '导出信息表失败',
                         type: 'error'
                     });
+                    NProgress.done();
                 })
+					});
             },
             // //删除
             handleDel: function (row) {
@@ -479,6 +484,17 @@
                 var _this = this;
                 _this.$refs.editForm.validate((valid) => {
                     if (valid) {
+                        if( _this.editForm.driverId == '' ||_this.editForm.driverName == '' ||
+							_this.editForm.driverWxId == '' ||_this.editForm.driverPhoneNumber == '' ||
+							_this.editForm.driverIdentity == '' ||_this.editForm.driverLicence == '' ||_this.editForm.driverLevelStar == ''){
+                            _this.$notify({
+                                title: '失败',
+                                message: '司机信息为空，编辑司机信息失败！！',
+                                type: 'error'
+                            });
+
+						}
+						else{
                         _this.$confirm('确认修改该司机的信息吗？', '提示', {}).then(() => {
                             _this.editLoading = true;
                             NProgress.start();
@@ -509,7 +525,7 @@
                                 }
                             });
                         });
-                    }
+                    }}
                 });
             }
         },

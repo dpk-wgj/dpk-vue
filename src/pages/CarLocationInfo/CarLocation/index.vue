@@ -109,23 +109,31 @@ export default {
             this.carMarkers.push(carMarker);
         },
         locateCar () {
+            if (this.carNumber == '' || this.carNumber == null) {
+                this.$notify({
+                    title: '失败',
+                    message: `车牌号为空，查询失败！,`,
+                    type: 'error'
+                });
+            }
+            else{
             let param = {
                 carNumber: this.carNumber
             }
             getCarInfoByCarNumber(param).then(res => {
-                if(res.status === 1){
+                if (res.status === 1) {
                     console.log(res.result)
-                    
-                    
-                    for(let item of this.carLocList){
-                        if(item.carInfo.carId === res.result.carInfo.carId){
+
+
+                    for (let item of this.carLocList) {
+                        if (item.carInfo.carId === res.result.carInfo.carId) {
                             let location = item.driverInfo.driverLocation.split(", ")
                             location[0] = parseFloat(location[0])
                             location[1] = parseFloat(location[1])
                             this.center = location
                         }
                     }
-                }else{
+                } else {
                     this.$notify({
                         title: '失败',
                         message: `未查询到车牌号 [${this.carNumber}] 位置信息`,
@@ -133,6 +141,7 @@ export default {
                     });
                 }
             })
+        }
         }
     },
     mounted() {

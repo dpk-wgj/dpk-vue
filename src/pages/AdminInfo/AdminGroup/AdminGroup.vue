@@ -4,13 +4,13 @@
 		<el-col :span="24" class="toolbar">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
-					<el-input v-model="filters.name" placeholder="姓名"></el-input>
+					<el-input v-model="filters.name" placeholder="组名"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" v-on:click="getAdmins">查询</el-button>
+					<el-button type="primary" v-on:click="getAdminGroups">查询</el-button>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" @click="handleAdd">新增</el-button>
+					<el-button type="primary" @click="handleAdd" disabled>新增</el-button>
 				</el-form-item>
 
 			</el-form>
@@ -18,18 +18,16 @@
 
 		<!--列表-->
 		<template>
-			<el-table :data="users" highlight-current-row v-loading="loading" style="width: 100%;"
+			<el-table :data="adminGroups" highlight-current-row v-loading="loading" style="width: 100%;"
 					  stripe
 					  border>
 				<el-table-column type="index" width="60" align="center" >
 				</el-table-column>
-				<el-table-column prop="adminInfo.userId" label="用户编号"  sortable align="center" >
+				<el-table-column prop="adminGroupId" label="Id" align="center"  sortable>
 				</el-table-column>
-				<el-table-column prop="adminInfo.username" label="用户姓名"  align="center" >
+				<el-table-column prop="groupName" label="组名"  align="center"  sortable>
 				</el-table-column>
-				<el-table-column prop="adminInfo.remark" label="用户备注"  align="center" >
-				</el-table-column>
-				<el-table-column prop="adminGroup.groupName" label="用户组名" align="center" >
+				<el-table-column prop="permission" label="权限" align="center"  sortable>
 				</el-table-column>
 				<el-table-column inline-template :context="_self" label="操作" width="200" align="center" >
 					<span>
@@ -39,6 +37,7 @@
 				</el-table-column>
 			</el-table>
 		</template>
+		<!--分页-->
 		<el-col :span="24" class="toolbar" style="padding-bottom:10px;">
 			<el-pagination layout="total,prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="this.total" style="float:right;">
 			</el-pagination>
@@ -46,20 +45,12 @@
 		<!--界面-->
 		<el-dialog :title="editFormTtile" v-model="editFormVisible" :close-on-click-modal="false">
 			<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-				<el-form-item label="姓名"  prop="username">
-					<el-input v-model="editForm.username" auto-complete="off"></el-input>
+				<el-form-item label="组名" prop="groupName">
+					<el-input v-model="editForm.groupName" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="密码" prop="password">
-					<el-input v-model="editForm.password" auto-complete="off"></el-input>
+				<el-form-item label="权限"prop="permission">
+					<el-input v-model="editForm.permission" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="备注">
-					<el-input v-model="editForm.remark" ></el-input>
-				</el-form-item>
-				<el-form-item label="组别" prop="userGroupId">
-					<el-input v-model="editForm.userGroupId" min="0" :max="2" type="number" auto-complete="off"></el-input>
-					<span style="color:#F56C6C;">0：管理员 1：司机 2：乘客</span>
-				</el-form-item>
-
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取 消</el-button>
@@ -70,7 +61,7 @@
 	</section>
 </template>
 <script>
-    import { getUserInfoById , getAllAdminInfo , deleteAdminInfoById , addAdminInfo , updateAdminInfo } from '../../api/api';
+    import {     deleteAdminGroup , addAdminGroup , updateAdminGroupById , getAllAdminGroup } from '../../../api/api';
     import NProgress from 'nprogress'
     export default {
         data() {
@@ -79,11 +70,9 @@
                     name: ''
                 },
                 editForm: {
-                    userId:'',
-                    username:'',
-                    password:'',
-                    remark:'',
-                    userGroupId:''
+                    adminGroupId:'',
+                    groupName:'',
+                    permission:'',
                 },
                 total: 0,
                 page: 1,
@@ -92,62 +81,59 @@
                 editFormTtile: '',//界面标题
                 editLoading: false,
                 editFormRules: {
-                    password: [
-                        { required: true, message: '请输入密码', trigger: 'blur' }
+                    groupName: [
+                        { required: true, message: '请输入组名', trigger: 'blur' }
                     ],
-                    username: [
-                        { required: true, message: '请输入姓名', trigger: 'blur' }
-                    ],
-
-                    userGroupId: [
-                        { required: true, message: '请选择组别', trigger: 'blur' }
+                    permission: [
+                        { required: true, message: '请输入权限', trigger: 'blur' }
                     ]
                 },
                 btnEditText:'确定',
-                users: [],
+                adminGroups: [],
             }
         },
         mounted(){
-            this.getAdmins();
+            this.getAdminGroups();
         },
         methods: {
             handleCurrentChange(val) {
                 this.page = val;
-                this.getAdmins();
+                this.getAdminGroups();
             },
-            //获取用户列表
-            getAdmins(){
+            //获取所有分组列表
+            getAdminGroups(){
                 let param = {
-                    sort: "user_id",
+                    sort: "user_group_id",
                     order: "asc",
                     offset: (this.page - 1) * 10,
                     limit: 10,
-                    adminInfo:{
-                        username:this.filters.name,
+                    adminGroup:{
+                        groupName:this.filters.name,
                     }
                 };
-                this.loading = true;
+                console.log(param);
+               this.loading = true;
                 NProgress.start();
-                getAllAdminInfo(param).then((res) => {
-                    //  console.log(res);
+                getAllAdminGroup(param).then((res) => {
                     if(res.status === 1){
-                        this.total = res.result.count;
-                        this.users = res.result.adminInfos;
+                        this.adminGroups = res.result.adminGroup1;
+                        this.total = res.result.total;
                         this.loading = false;
                         NProgress.done();
                     }
 
                 });
             },
+
             //添加用户
             handleAdd: function (){
 
-                this.editFormTtile = '添加用户';
-                this.editForm.userId = -1;
-                this.editForm.username = '';
-                this.editForm.password = '';
-                this.editForm.remark = '';
-                this.editForm.userGroupId = '';
+                this.editFormTtile = '添加分组';
+                this.editForm.adminGroupId = -1;
+                this.editForm.groupName = '';
+                this.editForm.permission = '';
+                // this.editForm.remark = '';
+                // this.editForm.userGroupId = 2;
                 this.editFormVisible = true;
             },
             //删除
@@ -155,23 +141,23 @@
                 // console.log(row);
                 // console.log(row.userId);
                 var _this = this;
-                this.$confirm('确认删除该用户吗?', '提示', {
+                this.$confirm('确认删除该记录吗?', '提示', {
                     //type: 'warning'
                 }).then(() => {
                     _this.Loading = true;
                     NProgress.start();
                     let param = new FormData();
-                    param.append("userId", row.adminInfo.userId);
-                    deleteAdminInfoById(param).then((res) => {
+                    param.append("adminGroupId", row.adminGroupId);
+                    deleteAdminGroup(param).then((res) => {
                         if(res.status === 1){
                             _this.Loading = false;
                             NProgress.done();
                             _this.$notify({
                                 title: '成功',
-                                message: '删除用户成功',
+                                message: '删除成功',
                                 type: 'success'
                             });
-                            _this.getAdmins();
+                            _this.getAdminGroups();
                         }
                     });
 
@@ -182,55 +168,56 @@
             //修改时显示的编辑页面
             handleEdit: function (row) {
                 //console.log("row,",row);
+
                 this.editFormTtile = '修改';
-                this.editForm.userId = row.adminInfo.userId;
-                this.editForm.username = row.adminInfo.username;
-                this.editForm.password = row.adminInfo.password;
-                this.editForm.remark = row.adminInfo.remark;
-                this.editForm.userGroupId = row.adminInfo.userGroupId;
+                this.editFormTtile = '修改分组';
+                this.editForm.adminGroupId = row.adminGroupId;
+                this.editForm.groupName = row.groupName;
+                this.editForm.permission = row.permission;
                 this.editFormVisible = true;
             },
             //新增或者修改点击的确定按钮
             editSubmit: function () {
                 var _this = this;
+
                 _this.$refs.editForm.validate((valid) => {
                     if (valid) {
+
                         _this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             _this.editLoading = true;
                             NProgress.start();
                             _this.btnEditText = '提交中';
-                            if (_this.editForm.userId === -1) {
+
+                            if (_this.editForm.adminGroupId === -1) {
                                 //新增用户
                                 let param = {
-                                    username: _this.editForm.username,
-                                    remark: _this.editForm.remark,
-                                    password: _this.editForm.password,
-                                    userGroupId: _this.editForm.userGroupId,
+                                    groupName: _this.editForm.groupName,
+                                    permission: _this.editForm.permission,
+                                    // password: _this.editForm.password,
+                                    // userGroupId: _this.editForm.userGroupId,
                                 };
-                                addAdminInfo(param).then((res) => {
+                                addAdminGroup(param).then((res) => {
                                     if(res.status === 1){
                                         _this.editLoading = false;
                                         NProgress.done();
                                         _this.btnEditText = '提 交';
                                         _this.$notify({
                                             title: '成功',
-                                            message: '新增用户成功',
+                                            message: '提交成功',
                                             type: 'success'
                                         });
                                         _this.editFormVisible = false;
-                                        _this.getAdmins();
+                                        _this.getAdminGroups();
                                     }
                                 });
                             } else {
                                 //编辑用户
                                 let param = {
-                                    userId: _this.editForm.userId,
-                                    username: _this.editForm.username,
-                                    remark: _this.editForm.remark,
-                                    password: _this.editForm.password,
-                                    userGroupId: _this.editForm.userGroupId,
+                                    adminGroupId: _this.editForm.adminGroupId,
+                                    groupName: _this.editForm.groupName,
+                                    permission: _this.editForm.permission,
                                 };
-                                updateAdminInfo(param).then((res) => {
+                                updateAdminGroupById(param).then((res) => {
                                     // console.log("!!!",res)
                                     if(res.status === 1){
                                         _this.editLoading = false;
@@ -238,11 +225,11 @@
                                         _this.btnEditText = '提 交';
                                         _this.$notify({
                                             title: '成功',
-                                            message: '编辑用户成功',
+                                            message: '提交成功',
                                             type: 'success'
                                         });
                                         _this.editFormVisible = false;
-                                        _this.getAdmins();
+                                        _this.getAdminGroups();
                                     }
                                 });
 

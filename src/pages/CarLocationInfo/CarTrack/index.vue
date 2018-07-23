@@ -4,7 +4,7 @@
     <el-col :span="24" class="toolbar">
         <el-form :inline="true">
             
-            <el-form-item label="起始时间">
+            <el-form-item label="起始时间(时间和日期都要选)">
                 <el-col :span="11">
                     <el-date-picker type="date" placeholder="选择日期" v-model="trackDate.startYmd" style="width: 100%;" ></el-date-picker>
                 </el-col>
@@ -13,7 +13,7 @@
                     <el-time-picker type="fixed-time" placeholder="选择时间" v-model="trackDate.startHms" style="width: 100%;"></el-time-picker>
                 </el-col>
             </el-form-item><br>
-            <el-form-item label="结束时间">
+            <el-form-item label="结束时间(时间和日期都要选)">
                 <el-col :span="11">
                     <el-date-picker type="date" placeholder="选择日期"  v-model="trackDate.endYmd" style="width: 100%;"></el-date-picker>
                 </el-col>
@@ -85,7 +85,7 @@ export default {
          */
         traceCar () {
             for(let o in this.trackDate){
-                if(this.trackDate[o] == null){
+                if(this.trackDate[o] == null|| this.trackDate[o] == ''){
                     this.$notify({
                         title: '失败',
                         message: `请选择时间`,
@@ -94,9 +94,19 @@ export default {
                     return
                 }
             }
+            // var start ='';
+            // var end ='';
+            // if(this.trackDate.startYmd!=null&&this.trackDate.startYmd!=''&&this.trackDate.startHms!=''&&this.trackDate.startHms!=null&&
+            //     this.trackDate.endYmd!=null&&this.trackDate.endYmd!=''&&this.trackDate.endHms!=''&&this.trackDate.endHms) {
+                let start = this.formatDate(this.trackDate.startYmd, 0) + " " + this.formatDate(this.trackDate.startHms, 1)
 
-            let start =  this.formatDate(this.trackDate.startYmd, 0)+" "+this.formatDate(this.trackDate.startHms, 1)
-            let end =  this.formatDate(this.trackDate.endYmd, 0)+" "+this.formatDate(this.trackDate.endHms, 1)
+               let end = this.formatDate(this.trackDate.endYmd, 0) + " " + this.formatDate(this.trackDate.endHms, 1)
+            // }
+            // else
+            // {
+            //     start ='';
+            //      end ='';
+            // }
             let param = {
                 startTime: start,
                 endTime: end,
@@ -229,11 +239,13 @@ export default {
         },
         formatDate (date, flag) {
             if(flag===0){//格式化年月日
+                var date = new Date(date);
                 let y = date.getFullYear();
                 let m = date.getMonth() + 1;
                 let d = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
                 return `${y}-${m}-${d}`
             }else{//格式化时分秒
+                var date = new Date(date);
                 let h = date.getHours() < 10 ? "0" + date.getHours() : date.getHours()
                 let m = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
                 let s = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
