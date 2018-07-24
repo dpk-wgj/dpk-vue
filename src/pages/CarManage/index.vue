@@ -71,7 +71,7 @@
 <script>
 	import util from '../../common/util'
 	import NProgress from 'nprogress'
-	import { findCarInfoByMultiCondition,deleteCarInfoByCarId, updateCarInfoByCarId, addCarInfo } from '../../api/api';
+	import { getTrafficSituation,findCarInfoByMultiCondition,deleteCarInfoByCarId, updateCarInfoByCarId, addCarInfo } from '../../api/api';
 
 	export default {
 		data() {
@@ -112,7 +112,51 @@
 
 			}
 		},
+        // computed: {
+        //     timeOut: {
+        //         set (val) {
+        //             this.$store.state.timeout.compileTimeout = val;
+        //         },
+        //         get() {
+        //             return this.$store.state.timeout.compileTimeout;
+        //         }
+        //     },
+        // },
 		methods: {
+                getListIng() {
+                    // // 这里是一个http的异步请求
+                    // if (  getUrlModule() === 'carManage' ) {
+                    //     let _this = this;
+                    //     this.timeOut = setTimeout(() => {
+                    //         _this.getListIng();
+                            getTrafficSituation().then((res) => {
+                                if(res.result!= '' ){
+                                    console.log(res.result) ;
+                                    // this.listLoading = false;
+                                    // NProgress.done();
+                                    this.$notify.info({
+                                        title: '车辆聚集警告',
+                                        message: 'xxxx位置车辆聚集，发出警告！！！',
+                                        duration: 0,
+                                        type: 'warning'
+                                    });
+                           }
+                            });
+                //         }, 5000);
+                //     } else {
+                //         this.timeOut = '';
+                    },
+
+
+            //     vehicleAggregationAlarm() {
+            // let _this = this
+            // let timer = setInterval(()=>{
+            //     axios.get(url,(res)=>{
+            //         // TODO 返回结果的判断
+            //     ...
+            //         _this.list.push(res)
+            //     })
+            // },500)},
 			handleCurrentChange(val) {
 				this.page = val;
 				this.getCars();
@@ -137,8 +181,11 @@
 						this.total = res.result.count;
 						this.cars = res.result.carInfos;
                         console.log(this.cars);
-						this.listLoading = false;
+                        this.getListIng();
+                        console.log("dsdsd");
+                        this.listLoading = false;
 						NProgress.done();
+
 					}
 				});
 			},
@@ -266,10 +313,15 @@
 				this.editForm.carNumber = "";
 				this.editForm.carType = "";
 				this.editForm.carSeat = '';
-			}
+			},
+
 		},
 		mounted() {
 			this.getCars();
+            // if ( this.timeOut ) {
+            //     clearTimeout(this.timeOut);
+            // }
+            setInterval(this.getListIng,1000*60*15);//s*1000
 		}
 	}
 </script>

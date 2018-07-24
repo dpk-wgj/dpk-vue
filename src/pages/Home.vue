@@ -79,9 +79,9 @@
 	export default {
 		data() {
 			return {
-				currentPath: '/carManage',
-				currentPathName: '车辆管理',
-				currentPathNameParent: '车辆管理',
+				currentPath: '/order/complaint',
+				currentPathName: '投诉处理',
+				currentPathNameParent: '投诉处理',
 				form: {
 					name: '',
 					region: '',
@@ -103,9 +103,9 @@
 		},
 		mounted() {
 			if(!window.localStorage.getItem("token")){
-                  this.$router.push({ path: '/carManage' });
+                  this.$router.push({ path: '/order/complaint' });
 			}
-            this.$router.push('/carManage');
+            this.$router.push('/order/complaint');
 		},
 		methods: {
 			onSubmit() {

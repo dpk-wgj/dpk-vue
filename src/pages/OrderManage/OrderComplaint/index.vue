@@ -123,6 +123,7 @@
                     complaintStatus: 3,
                     roleName: '反馈'
                 }],
+				counts:0,
                 trackDate: {
                     startYmd: null,
                     startHms: null,
@@ -222,16 +223,20 @@
                             complaintCreateTime: this.filters.complaintCreateTime,
                         },
                     };
-                    console.log(para)
+
                     this.listLoading = true;
                     NProgress.start();
                     findComplaintInfoByMultiCondition(para).then((res) => {
                         this.total = res.result.count;
                         this.complaintlist = res.result.complaintInfos;
+                        this.counts = res.result.count1;
                         this.listLoading = false;
                         NProgress.done();
+                        if(this.counts!=0)
+						{
+						    this.open2();
+						}
                     });
-
             },
             handleEdit(row) {
                 this.$confirm('将对此投诉进行受理, 是否进行?', '提示', {
@@ -305,12 +310,20 @@
                         });
                     });
 
+            },
+            open2() {
+                this.$notify.info({
+                    title: '投诉信息提示',
+                    message:  h('i', { style: 'color: teal'}, '您还有'+this.counts+'条投诉未处理或者反馈，请及时处理或者反馈！',),
+                    duration: 0
+                });
             }
 
         },
 
         mounted() {
-            this.getComplaintInfoList();
+         this.getComplaintInfoList();
+
         }
     }
 </script>
