@@ -91,6 +91,9 @@ export const getDriverInfoByMultiCondition = params => { return axios.post(`/adm
 
 export const getCarInfoNoCompatibleByCarNumber = params => { return axios.get(`/admin/car/getCarInfoNoCompatibleByCarNumber/${params}`,).then(res => res.data); };
 
+export const getDriverInfoByDriverId = params => { return axios.get(`/admin/driver/getDriverInfoByDriverId/${params}`,).then(res => res.data); };
+
+export const getCarOff = params => { return axios.post(`/admin/driver/getCarOff`,params).then(res => res.data); };
 
 //车辆定位
 export const getAllCarLocation = () => { return axios.get(`/admin/driver/getAllCarLocation`).then(res => res.data); };

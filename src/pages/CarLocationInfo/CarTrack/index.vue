@@ -139,7 +139,7 @@ export default {
                         let a = orderList[i].locationInfo
                         let locArr =  a.split("-") // ["111.22,22.11","111.22,22.11"]形式
                         for(let loc of locArr){
-                            let splitedLoc = loc.split(", ")//["111.22","22.11"]形式
+                            let splitedLoc = loc.split(",")//["111.22","22.11"]形式
                             splitedLoc[0] = parseFloat(splitedLoc[0])
                             splitedLoc[1] = parseFloat(splitedLoc[1])
                             splitedLoc.push(i)

@@ -32,7 +32,7 @@
 
 <script>
 import { AMapManager } from 'vue-amap';
-import {getAllCarLocation, getCarInfoByCarNumber} from '../../../api/api';
+import {getAllCarLocation, getCarInfoByCarNumber,getTrafficSituation} from '../../../api/api';
 
 export default {
 
@@ -80,8 +80,32 @@ export default {
         
     },
     methods: {
+        getListIng() {
+            // // 这里是一个http的异步请求
+            // if (  getUrlModule() === 'carManage' ) {
+            //     let _this = this;
+            //     this.timeOut = setTimeout(() => {
+            //         _this.getListIng();
+            getTrafficSituation().then((res) => {
+                if(res.result!= '' ){
+                    console.log(res.result) ;
+                    // this.listLoading = false;
+                    // NProgress.done();
+                    this.$notify.info({
+                        title: '车辆聚集警告',
+                        message: 'xxxx位置车辆聚集，发出警告！！！',
+                        duration: 0,
+                        type: 'warning'
+                    });
+                }
+            });
+            //         }, 5000);
+            //     } else {
+            //         this.timeOut = '';
+        },
+
         addMarker(item) {
-            let location = item.driverInfo.driverLocation.split(", ")
+            let location = item.driverInfo.driverLocation.split(",")
             location[0] = parseFloat(location[0])
             location[1] = parseFloat(location[1])
             let carMarker = {
@@ -123,8 +147,6 @@ export default {
             getCarInfoByCarNumber(param).then(res => {
                 if (res.status === 1) {
                     console.log(res.result)
-
-
                     for (let item of this.carLocList) {
                         if (item.carInfo.carId === res.result.carInfo.carId) {
                             let location = item.driverInfo.driverLocation.split(", ")
@@ -142,11 +164,10 @@ export default {
                 }
             })
         }
-        }
-    },
-    mounted() {
-        
+        },
+    open11(){
         getAllCarLocation().then(res => {
+            console.log("!!!")
             if(res.status === 1){
                 this.carLocList = res.result
                 for(let item of res.result){
@@ -155,24 +176,32 @@ export default {
                     // location[1] = parseFloat(location[1])
                     this.addMarker(item)
                 }
-                
-        // let _this = this
-        // this.events = { 
-        //     init(map) {
-        //         console.log("!!!",map.getCenter())
-        //         AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
-        //             const marker = new SimpleMarker({
-        //                 iconLabel: 'A',
-        //                 iconStyle: 'red',
-        //                 map: map,
-        //                 position: location,
-        //             });
-        //         });
 
-        //     }
-        // }
+                // let _this = this
+                // this.events = {
+                //     init(map) {
+                //         console.log("!!!",map.getCenter())
+                //         AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
+                //             const marker = new SimpleMarker({
+                //                 iconLabel: 'A',
+                //                 iconStyle: 'red',
+                //                 map: map,
+                //                 position: location,
+                //             });
+                //         });
+
+                //     }
+                // }
             }
         })
+
+    }
+    },
+    mounted() {
+        this.open11();
+        setInterval(this.open11,1000*60);//一分钟刷新一次车辆位置
+        setInterval(this.getListIng,1000*60*15);//s*1000//15分钟去获取一次 车辆聚集情况
+
     }
     
 }
