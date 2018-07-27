@@ -91,6 +91,9 @@ export const getDriverInfoByMultiCondition = params => { return axios.post(`/adm
 
 export const getCarInfoNoCompatibleByCarNumber = params => { return axios.get(`/admin/car/getCarInfoNoCompatibleByCarNumber/${params}`,).then(res => res.data); };
 
+export const getDriverInfoByDriverId = params => { return axios.get(`/admin/driver/getDriverInfoByDriverId/${params}`,).then(res => res.data); };
+
+export const getCarOff = params => { return axios.post(`/admin/driver/getCarOff`,params).then(res => res.data); };
 
 //车辆定位
 export const getAllCarLocation = () => { return axios.get(`/admin/driver/getAllCarLocation`).then(res => res.data); };
@@ -114,3 +117,11 @@ export const  updateComplaintInfoByComplaintId = params => { return axios.post(`
 export const findOrderInfoByMultiCondition = param => { return axios.post(`/admin/findOrderInfoByMultiCondition`,param).then(res => res.data); };
 // export const getCarInfoByCarId = params => { return axios.get(`/api/driver/getOrderInfoByDriverId}`).then(res => res.data); };
 
+//
+export const getTrafficSituation = () => { return axios.post(`/admin/point/getTrafficSituation`).then(res => res.data); };
+
+export const getOrderByYear =param =>{ return axios.post(`/admin/count/getOrderByYear`, params).then(res => res.data);};
+export const getOrderByMonth =param =>{ return axios.post(`/admin/count/getOrderByMonth`, params).then(res => res.data);};
+export const getOrderByDriverId =param =>{ return axios.post(`/admin/count/getOrderByYear`, params).then(res => res.data);};
+export const getAllOrderNum =() =>{ return axios.get(`/admin/count/getAllOrderNum`).then(res => res.data);};
+export const getOrderByCarNumber =param =>{ return axios.post(`/admin/count/getOrderByMonth`, params).then(res => res.data);};

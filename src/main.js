@@ -25,8 +25,11 @@ import CarManage from './pages/CarManage/index.vue'
 import OrderList from './pages/OrderManage/OrderList/index.vue'
 import OrderComplaint from './pages/OrderManage/OrderComplaint/index.vue'
 import OrderStatistics from './pages/OrderManage/OrderStatistics/index.vue'
+import echartsYear from './pages/charts/echartsYear.vue'
+import echartsMonth from './pages/charts/echartsMonth.vue'
+import index from './pages/charts/index.vue'
 
-import echarts from './pages/charts/echarts.vue'
+
 // start mock
 import Mock from './mock';
 // Mock.bootstrap();
@@ -51,7 +54,20 @@ const routes = [
     component: Login,
     hidden: true//不显示在导航中
   },
-  {
+    {
+        path: '/',
+        component: Home,
+        name: '订单管理',
+        iconCls: 'fa fa-money',
+        children: [
+            { path: '/order/complaint', component: OrderComplaint, name: '投诉处理' },
+            { path: '/order/list', component: OrderList, name: '订单检索' },
+
+            // { path: '/order/statistics', component: OrderStatistics, name: '数据统计' }
+        ]
+    },
+
+    {
     path: '/carManage',
     component: Home,
     name: '',
@@ -93,17 +109,6 @@ const routes = [
             { path: '/adminGroup', component: AdminGroup, name: '分组管理' }
         ]
     },
-  {
-    path: '/',
-    component: Home,
-    name: '订单管理',
-    iconCls: 'fa fa-money',
-    children: [
-      { path: '/order/list', component: OrderList, name: '订单检索' },
-      { path: '/order/complaint', component: OrderComplaint, name: '投诉处理' },
-      // { path: '/order/statistics', component: OrderStatistics, name: '数据统计' }
-    ]
-  },
 
   {
     path: '/',
@@ -118,10 +123,12 @@ const routes = [
   {
     path: '/',
     component: Home,
-    name: 'Charts',
+    name: '服务报表',
     iconCls: 'fa fa-bar-chart',
     children: [
-      { path: '/echarts', component: echarts, name: 'echarts' }
+      { path: '/echart', component: index, name: 'index' },
+        { path: '/echartsMonth', component: echartsMonth, name: '月份统计报表' },
+        { path: '/echartsYear', component: echartsYear, name: '年份统计报表' }
     ]
   }
 ]

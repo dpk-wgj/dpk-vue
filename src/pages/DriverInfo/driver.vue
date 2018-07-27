@@ -160,6 +160,26 @@
                     <el-input  v-model="editForm1.carSeat" style="width: 100%;" disabled></el-input>
                     </el-col>
                 </el-form-item>
+				<el-form-item label="司机姓名"  prop="carDriverIdADriverName">
+					<el-col :span="5">
+						<el-input  v-model="carDriverIdADriverName" style="width: 100%;" disabled></el-input>
+					</el-col>
+					<el-col class="line" :span="2">&nbsp;</el-col>
+					<el-button type="primary" v-if="carDriverIdADriverName!=''" v-on:click="getCarOffA">解绑</el-button>
+					<el-button   type="primary" v-else v-on:click="getCarOffA" disabled>解绑</el-button>
+				</el-form-item>
+				<el-form-item  prop="carDriverIdBDriverName">
+					<el-col :span="5">
+						<el-input  v-model="carDriverIdBDriverName" style="width: 100%;" disabled></el-input>
+
+					</el-col>
+					<el-col class="line" :span="2">&nbsp;</el-col>
+					<el-button type="primary" v-if="carDriverIdBDriverName!=''" v-on:click="getCarOffB">解绑</el-button>
+					<el-button   type="primary" v-else v-on:click="getCarOffB" disabled>解绑</el-button>
+				</el-form-item>
+				<!--<span v-if="editForm1.carDriverIdBDriverName!=''&&editForm1.carDriverIdADriverName!=''">-->
+
+				<!--</span>-->
             </el-form>
             </el-row>
             <div slot="footer" class="dialog-footer">
@@ -172,7 +192,7 @@
 
 <script>
     import NProgress from 'nprogress'
-    import { getDriverInfoByMultiCondition,updateDriverInfoByDriverId,deleteDriverInfoByDriverId ,importExcel,makeExcel,getCarInfoNoCompatibleByCarNumber,changCar} from '../../api/api';
+    import {getCarOff, getDriverInfoByDriverId,getDriverInfoByMultiCondition,updateDriverInfoByDriverId,deleteDriverInfoByDriverId ,importExcel,makeExcel,getCarInfoNoCompatibleByCarNumber,changCar} from '../../api/api';
     export default {
         data() {
             return {
@@ -185,6 +205,10 @@
                 carForm: {
                     carNumber:""
                 },
+                carDriverIdADriverName:'',
+                driverIdA:0,
+                driverIdB:0,
+                carDriverIdBDriverName:'',
                 driverInfo: [],
                 total: 0,
                 page: 1,
@@ -213,6 +237,10 @@
                     carNumber:"",
                     carType:"",
                     carSeat:"",
+                    carDriverIdA:"",
+                    carDriverIdB:"",
+                    // carDriverIdADriverName:"",
+                    // carDriverIdBDriverName:""
                 },
                 editLoading: false,
                 editLoading1: false,
@@ -309,7 +337,11 @@
                 });
             },
             getCar: function () {
-                var driverId = this.editForm1.driverId
+                this.carDriverIdADriverName='';
+				this.driverIdA=0;
+                this.driverIdB=0;
+				this.carDriverIdBDriverName='';
+                var driverId = this.editForm1.driverId;
                 this.editLoading1 = true;
                 NProgress.start();
                 if (this.carForm.carNumber == "") {
@@ -340,7 +372,34 @@
                                 this.editLoading1 = false;
                                 this.editForm1 = res.result;
                                 this.editForm1.driverId = driverId;
-                                // console.log( this.editForm1.driverId );
+                                if(res.result.carDriverIdA != 0 )
+								{
+                                    getDriverInfoByDriverId(this.editForm1.carDriverIdA )
+                                        .then((res) => {
+                                            if (res.status === 1) {
+                                                this.carDriverIdADriverName = res.result.driverName;
+                                                this.driverIdA = res.result.driverId;
+                                            }
+                                        }
+										)
+								}
+								else
+                                    this.editForm1.carDriverIdADriverName ="";
+                                if(res.result.carDriverIdB != 0  )
+                                {
+                                    getDriverInfoByDriverId(this.editForm1.carDriverIdB )
+                                        .then((res) => {
+                                                if (res.status === 1) {
+                                                    this.editLoading1 = false;
+                                                    this.carDriverIdBDriverName = res.result.driverName;
+                                                    this.driverIdB = res.result.driverId;
+                                                }
+                                            }
+                                        )
+                                }
+                                else
+                                    this.editForm1.carDriverIdBDriverName ="";
+                                this.editLoading1 = false;
                                 this.$notify({
                                     title: '成功',
                                     message: '查询车辆信息成功，可以进行换车',
@@ -353,11 +412,10 @@
                                 this.carForm.carNumber = '';
                                 this.$notify.error({
                                     title: '查询失败',
-                                    message: "车牌号码不存在或者该车辆现在不再支持绑定司机",
+                                    message: "车牌号码不存在！",
                                     type: 'error'
                                 });
                             }
-
                         })
                 }
             },
@@ -412,6 +470,82 @@
 
                 });
             },
+            getCarOffA: function () {
+                var _this = this;
+                _this.$refs.editForm1.validate((valid) => {
+                        if (valid) {
+                            _this.$confirm('确认该司机解绑该车辆吗？', '提示', {}).then(() => {
+                                _this.editLoading1 = true;
+                                NProgress.start();
+                                _this.btnEditText = '提交中';
+                                let param = {
+                                    driverId: _this.driverIdA,
+                                    carId: _this.editForm1.carId
+                                };
+                                getCarOff(param).then((res) => {
+                                    // console.log("!!!", res)
+                                    if (res.status === 1) {
+                                        console.log("!!!")
+                                        _this.editLoading1 = false;
+                                        this.carDriverIdADriverName=''
+                                        NProgress.done();
+                                        _this.btnEditText = '提 交';
+                                        _this.$notify({
+                                            title: '成功',
+                                            message: '解绑成功',
+                                            type: 'success'
+                                        });
+                                    }
+                                });
+                            });
+                        }
+                        else {
+                            _this.$notify({
+                                title: '失败',
+                                message: '解绑操作取消！',
+                                type: 'error'
+                            });
+                        }
+                });
+            },
+            getCarOffB: function () {
+                var _this = this;
+                _this.$refs.editForm1.validate((valid) => {
+                    if (valid) {
+                        _this.$confirm('确认该司机解绑该车辆吗？', '提示', {}).then(() => {
+                            _this.editLoading1 = true;
+                            NProgress.start();
+                            _this.btnEditText = '提交中';
+                            let param = {
+                                driverId: _this.driverIdB,
+                                carId: _this.editForm1.carId
+                            };
+                            getCarOff(param).then((res) => {
+                                // console.log("!!!", res)
+                                if (res.status === 1) {
+                                      //    this.carDriverIdADriverName='';
+                                    this.carDriverIdBDriverName='';
+                                    _this.editLoading1 = false;
+                                    NProgress.done();
+                                    _this.btnEditText = '提 交';
+                                    _this.$notify({
+                                        title: '成功',
+                                        message: '解绑成功',
+                                        type: 'success'
+                                    });
+                                }
+                            });
+                        });
+                    }
+                    else {
+                        _this.$notify({
+                            title: '失败',
+                            message: '解绑操作取消！',
+                            type: 'error'
+                        });
+                    }
+                });
+            },
             //显示司机信息编辑界面
             handleEdit: function (row) {
                 // console.log("row,", row)
@@ -430,12 +564,25 @@
             changeCar: function (row) {
                 // console.log("row,", row)
                 this.editFormVisible1 = true;
-                this.editForm1.id = row.id;
-                this.editForm1.driverId = row.driverInfo.driverId;
-                this.editForm1.carId = row.carInfo.carId;
-                this.editForm1.carNumber = row.carInfo.carNumber;
-                this.editForm1.carType = row.carInfo.carType;
-                this.editForm1.carSeat = row.carInfo.carSeat;
+                // this.editForm1.id = row.id;
+                 this.editForm1.driverId = row.driverInfo.driverId;
+                // if(row.carInfo.carId !=0){
+                // this.editForm1.carId = row.carInfo.carId;
+                // this.editForm1.carNumber = row.carInfo.carNumber;
+                // this.editForm1.carType = row.carInfo.carType;
+                // this.editForm1.carSeat = row.carInfo.carSeat;
+				// }
+				// else
+				// {
+				this.editForm1.id = row.id;
+                    this.editForm1.carId = '';
+                    this.editForm1.carNumber = '';
+                    this.editForm1.carType = '';
+                    this.editForm1.carSeat ='';
+				// }
+                this.carDriverIdADriverName = '';
+                this.carDriverIdBDriverName = '';
+                this.carForm.carNumber ='';
             },
             editSubmit1: function () {
                 var _this = this;
@@ -443,13 +590,20 @@
                     if(this.carForm.carNumber == "") {
                         _this.$notify({
                             title: '失败',
-                            message: '车牌号码未改变,换车失败！',
+                            message: '车牌号码为空,换车失败！',
                             type: 'error'
                         });
                     }
+                    else if(this.carDriverIdADriverName!=''&&this.carDriverIdBDriverName!='')
+					{
+                        _this.$notify({
+                            title: '失败',
+                            message: '车辆位置已满，请先解绑司机！！',
+                            type: 'error'
+                        });
+					}
                     else{
                     if (valid) {
-
                         _this.$confirm('确认换车吗？', '提示', {}).then(() => {
                             _this.editLoading1 = true;
                             NProgress.start();
@@ -461,7 +615,6 @@
                             changCar(param).then((res) => {
                                 // console.log("!!!", res)
                                 if (res.status === 1) {
-                                    this.carForm.carId = '';
                                     _this.editLoading1 = false;
                                     NProgress.done();
                                     _this.btnEditText = '提 交';
@@ -471,13 +624,28 @@
                                         type: 'success'
                                     });
                                     this.carForm.carNumber = '';
+                                    _this.carDriverIdADriverName='';
+										_this.carDriverIdBDriverName='';
                                     _this.editFormVisible1 = false;
                                     _this.getDriver();
                                 }
                             });
-                        });
+                        })
+							// .catch((error) => {
+                        //     this.carForm.carNumber='';
+                        //     this.carDriverIdADriverName='';
+                        //     this.driverIdA=0;
+                        //     this.driverIdB=0;
+                        //     this.carDriverIdBDriverName='';
+                        //     this.loading = false;
+                        //     _this.$notify({
+                        //         title: '失败',
+                        //         message: '换车操作取消！',
+                        //         type: 'error'
+                        //     });
+                        // })
                         }
-                    }
+					}
                 });
             },
             editSubmit2: function () {

@@ -112,7 +112,27 @@
 
 			}
 		},
+        // computed: {
+        //     timeOut: {
+        //         set (val) {
+        //             this.$store.state.timeout.compileTimeout = val;
+        //         },
+        //         get() {
+        //             return this.$store.state.timeout.compileTimeout;
+        //         }
+        //     },
+        // },
 		methods: {
+
+            //     vehicleAggregationAlarm() {
+            // let _this = this
+            // let timer = setInterval(()=>{
+            //     axios.get(url,(res)=>{
+            //         // TODO 返回结果的判断
+            //     ...
+            //         _this.list.push(res)
+            //     })
+            // },500)},
 			handleCurrentChange(val) {
 				this.page = val;
 				this.getCars();
@@ -137,8 +157,11 @@
 						this.total = res.result.count;
 						this.cars = res.result.carInfos;
                         console.log(this.cars);
-						this.listLoading = false;
+                        // this.getListIng();
+                        // console.log("dsdsd");
+                        this.listLoading = false;
 						NProgress.done();
+
 					}
 				});
 			},
@@ -266,10 +289,15 @@
 				this.editForm.carNumber = "";
 				this.editForm.carType = "";
 				this.editForm.carSeat = '';
-			}
+			},
+
 		},
 		mounted() {
 			this.getCars();
+            // if ( this.timeOut ) {
+            //     clearTimeout(this.timeOut);
+            // }
+            // setInterval(this.getListIng,1000*60*15);//s*1000
 		}
 	}
 </script>
