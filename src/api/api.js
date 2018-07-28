@@ -40,7 +40,7 @@ export const addAdminInfo = params => { return axios.post(`/admin/addAdminInfo`,
 export const updateAdminInfo = params => { return axios.post(`/admin/updateAdminInfo`, params).then(res => res.data); };
 
 export const adminLogin = params => { 
-    return axios.post(`/public/driver/login`, params).then(res => {
+    return axios.post(`/public/admin/login`, params).then(res => {
         let token = res.headers.refresh
         window.localStorage.setItem('token',token);
         // window.localStorage.setItem('user',JSON.stringify(res.data.result))

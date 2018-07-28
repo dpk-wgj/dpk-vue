@@ -23,8 +23,8 @@
       return {
         logining: false,
         ruleForm2: {
-          account: 'admin',
-          checkPass: '123456'
+          account: '',
+          checkPass: ''
         },
         rules2: {
           account: [
@@ -45,8 +45,12 @@
       },
       handleSubmit2(ev) {
         let params = {
-          driverWxId: 'yjyjyjyjyjy',
+         // adminInfo:{
+             username:this.ruleForm2.account,
+             password:this.ruleForm2.checkPass
+          // }
         }
+        console.log(params)
         adminLogin(params).then(res => {
           if(res.data.status === 1){
             this.$router.push({ path: '/' });

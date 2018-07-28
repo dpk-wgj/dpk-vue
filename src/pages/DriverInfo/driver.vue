@@ -63,8 +63,8 @@
 			</el-table-column>
 			<el-table-column prop="driverInfo.driverName" label="姓名" align="center"    >
 			</el-table-column>
-			<el-table-column prop="driverInfo.driverWxId" label="微信号" align="center"  width="150" >
-			</el-table-column>
+			<!--<el-table-column prop="driverInfo.driverWxId" label="微信号" align="center"  width="150" >-->
+			<!--</el-table-column>-->
 			<el-table-column prop="driverInfo.driverPhoneNumber" label="手机号"  align="center"   >
 			</el-table-column>
 			<el-table-column prop="driverInfo.driverIdentity" label="身份证"  align="center"   >
@@ -107,9 +107,9 @@
 				<el-form-item label="姓名" prop="driverName">
 					<el-input v-model="editForm.driverName" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="微信号"  prop="driverWxId">
-					<el-input v-model="editForm.driverWxId"  size="medium"></el-input>
-				</el-form-item>
+				<!--<el-form-item label="微信号"  prop="driverWxId">-->
+					<!--<el-input v-model="editForm.driverWxId"  size="medium"></el-input>-->
+				<!--</el-form-item>-->
 				<el-form-item label="手机号"  prop="driverPhoneNumber">
 					<el-input  v-model="editForm.driverPhoneNumber" ></el-input>
 				</el-form-item>
