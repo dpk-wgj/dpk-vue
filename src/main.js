@@ -128,7 +128,7 @@ const routes = [
     children: [
       { path: '/echart', component: index, name: 'index' },
         { path: '/echartsMonth', component: echartsMonth, name: '月份统计报表' },
-        { path: '/echartsYear', component: echartsYear, name: '年份统计报表' }
+        // { path: '/echartsYear', component: echartsYear, name: '年份统计报表' }
     ]
   }
 ]

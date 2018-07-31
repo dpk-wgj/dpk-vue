@@ -239,8 +239,7 @@
                     carSeat:"",
                     carDriverIdA:"",
                     carDriverIdB:"",
-                    // carDriverIdADriverName:"",
-                    // carDriverIdBDriverName:""
+                     driverName:"",
                 },
                 editLoading: false,
                 editLoading1: false,
@@ -342,6 +341,7 @@
                 this.driverIdB=0;
 				this.carDriverIdBDriverName='';
                 var driverId = this.editForm1.driverId;
+                var driverName = this.editForm1.driverName;
                 this.editLoading1 = true;
                 NProgress.start();
                 if (this.carForm.carNumber == "") {
@@ -372,6 +372,7 @@
                                 this.editLoading1 = false;
                                 this.editForm1 = res.result;
                                 this.editForm1.driverId = driverId;
+                                this.editForm1.driverName = driverName;
                                 if(res.result.carDriverIdA != 0 )
 								{
                                     getDriverInfoByDriverId(this.editForm1.carDriverIdA )
@@ -562,27 +563,17 @@
             },
             //显示换车编辑界面
             changeCar: function (row) {
-                // console.log("row,", row)
                 this.editFormVisible1 = true;
-                // this.editForm1.id = row.id;
                  this.editForm1.driverId = row.driverInfo.driverId;
-                // if(row.carInfo.carId !=0){
-                // this.editForm1.carId = row.carInfo.carId;
-                // this.editForm1.carNumber = row.carInfo.carNumber;
-                // this.editForm1.carType = row.carInfo.carType;
-                // this.editForm1.carSeat = row.carInfo.carSeat;
-				// }
-				// else
-				// {
-				this.editForm1.id = row.id;
-                    this.editForm1.carId = '';
-                    this.editForm1.carNumber = '';
-                    this.editForm1.carType = '';
-                    this.editForm1.carSeat ='';
-				// }
-                this.carDriverIdADriverName = '';
-                this.carDriverIdBDriverName = '';
-                this.carForm.carNumber ='';
+                 this.editForm1.driverName = row.driverInfo.driverName;
+                 this.editForm1.id = row.id;
+				 this.editForm1.carId = '';
+				 this.editForm1.carNumber = '';
+				 this.editForm1.carType = '';
+				 this.editForm1.carSeat ='';
+                 this.carDriverIdADriverName = '';
+                 this.carDriverIdBDriverName = '';
+                 this.carForm.carNumber ='';
             },
             editSubmit1: function () {
                 var _this = this;
@@ -602,6 +593,14 @@
                             type: 'error'
                         });
 					}
+					else if(this.carDriverIdADriverName == this.editForm1.driverName ||this.carDriverIdBDriverName == this.editForm1.driverName)
+                    {
+                        _this.$notify({
+                            title: '失败',
+                            message: '车辆信息相同，请选择新车！',
+                            type: 'error'
+                        });
+                    }
                     else{
                     if (valid) {
                         _this.$confirm('确认换车吗？', '提示', {}).then(() => {

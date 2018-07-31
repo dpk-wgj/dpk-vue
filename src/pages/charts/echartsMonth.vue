@@ -10,12 +10,9 @@
             <el-col :span="12">
                 <div id="chartLine" style="width:100%; height:400px;"></div>
             </el-col>
-            <el-col :span="12">
-                <div id="chartPie" style="width:100%; height:400px;"></div>
-            </el-col>
-            <el-col :span="24">
-                <a href="http://echarts.baidu.com/examples.html" target="_blank" style="float: right;">more>></a>
-            </el-col>
+            <!--<el-col :span="12">-->
+                <!--<div id="chartPie" style="width:100%; height:400px;"></div>-->
+            <!--</el-col>-->
         </el-row>
     </section>
 </template>
@@ -59,8 +56,8 @@
                 }
                 this.chartBar.setOption({
                     title: {
-                        text: 'Bar Chart',
-                        subtext: '数据来自网络'
+                        text: '2018年度月份统计报表',
+                        // subtext: '数据来自网络'
                     },
                     tooltip: {
                         trigger: 'axis',

@@ -311,10 +311,10 @@
                     });
 
             },
-            open2() {
+            open2: function () {
                 this.$notify.info({
                     title: '投诉信息提示',
-                    message:  h('i', { style: 'color: teal'}, '您还有'+this.counts+'条投诉未处理或者反馈，请及时处理或者反馈！',),
+					message:  '您还有' + this.counts + '条投诉未处理或者反馈，请及时处理或者反馈！',
                     duration: 0
                 });
             }
