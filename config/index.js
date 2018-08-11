@@ -21,7 +21,7 @@ module.exports = {
 		port: process.env.PORT || 8085,
 		autoOpenBrowser: true,
 		assetsSubDirectory: 'static',
-		assetsPublicPath: './',
+		assetsPublicPath: '/',
 		proxyTable: {
 		  '/api': {
 				target: 'http://localhost:8000',

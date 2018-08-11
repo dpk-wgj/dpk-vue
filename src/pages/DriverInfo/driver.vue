@@ -69,8 +69,8 @@
 			</el-table-column>
 			<el-table-column prop="driverInfo.driverIdentity" label="身份证"  align="center"   >
 			</el-table-column>
-			<el-table-column prop="driverInfo.driverLicence" label="驾驶证"  align="center"   >
-			</el-table-column>
+			<!--<el-table-column prop="driverInfo.driverLicence" label="驾驶证"  align="center"   >-->
+			<!--</el-table-column>-->
 			<el-table-column prop="driverInfo.driverLevelStar" label="信誉积分"  align="center"  sortable  >
 			</el-table-column>
 			<el-table-column  label="车辆信息"  align="center"   >
@@ -97,7 +97,7 @@
 
 			<!--分页-->
 		<el-col :span="24" class="toolbar" style="padding-bottom:10px;">
-			<el-pagination layout="total,prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="this.total" style="float:right;">
+			<el-pagination layout="total,prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="this.total" style="float:right;">
 			</el-pagination>
 		</el-col>
 
