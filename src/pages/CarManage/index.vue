@@ -43,7 +43,7 @@
 
 <!--分页-->
 <el-col :span="24" class="toolbar" style="padding-bottom:10px;">
-<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="pageParam.limit" :total="total" style="float:right;">
+<el-pagination layout="total,prev, pager, next" @current-change="handleCurrentChange" :page-size="pageParam.limit" :total="total" style="float:right;">
 </el-pagination>
 </el-col>
 

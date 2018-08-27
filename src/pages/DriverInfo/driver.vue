@@ -63,14 +63,14 @@
 			</el-table-column>
 			<el-table-column prop="driverInfo.driverName" label="姓名" align="center"    >
 			</el-table-column>
-			<el-table-column prop="driverInfo.driverWxId" label="微信号" align="center"  width="150" >
-			</el-table-column>
+			<!--<el-table-column prop="driverInfo.driverWxId" label="微信号" align="center"  width="150" >-->
+			<!--</el-table-column>-->
 			<el-table-column prop="driverInfo.driverPhoneNumber" label="手机号"  align="center"   >
 			</el-table-column>
 			<el-table-column prop="driverInfo.driverIdentity" label="身份证"  align="center"   >
 			</el-table-column>
-			<el-table-column prop="driverInfo.driverLicence" label="驾驶证"  align="center"   >
-			</el-table-column>
+			<!--<el-table-column prop="driverInfo.driverLicence" label="驾驶证"  align="center"   >-->
+			<!--</el-table-column>-->
 			<el-table-column prop="driverInfo.driverLevelStar" label="信誉积分"  align="center"  sortable  >
 			</el-table-column>
 			<el-table-column  label="车辆信息"  align="center"   >
@@ -97,7 +97,7 @@
 
 			<!--分页-->
 		<el-col :span="24" class="toolbar" style="padding-bottom:10px;">
-			<el-pagination layout="total,prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="this.total" style="float:right;">
+			<el-pagination layout="total,prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="this.total" style="float:right;">
 			</el-pagination>
 		</el-col>
 
@@ -107,9 +107,9 @@
 				<el-form-item label="姓名" prop="driverName">
 					<el-input v-model="editForm.driverName" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="微信号"  prop="driverWxId">
-					<el-input v-model="editForm.driverWxId"  size="medium"></el-input>
-				</el-form-item>
+				<!--<el-form-item label="微信号"  prop="driverWxId">-->
+					<!--<el-input v-model="editForm.driverWxId"  size="medium"></el-input>-->
+				<!--</el-form-item>-->
 				<el-form-item label="手机号"  prop="driverPhoneNumber">
 					<el-input  v-model="editForm.driverPhoneNumber" ></el-input>
 				</el-form-item>
@@ -239,8 +239,7 @@
                     carSeat:"",
                     carDriverIdA:"",
                     carDriverIdB:"",
-                    // carDriverIdADriverName:"",
-                    // carDriverIdBDriverName:""
+                     driverName:"",
                 },
                 editLoading: false,
                 editLoading1: false,
@@ -342,6 +341,7 @@
                 this.driverIdB=0;
 				this.carDriverIdBDriverName='';
                 var driverId = this.editForm1.driverId;
+                var driverName = this.editForm1.driverName;
                 this.editLoading1 = true;
                 NProgress.start();
                 if (this.carForm.carNumber == "") {
@@ -372,6 +372,7 @@
                                 this.editLoading1 = false;
                                 this.editForm1 = res.result;
                                 this.editForm1.driverId = driverId;
+                                this.editForm1.driverName = driverName;
                                 if(res.result.carDriverIdA != 0 )
 								{
                                     getDriverInfoByDriverId(this.editForm1.carDriverIdA )
@@ -562,27 +563,17 @@
             },
             //显示换车编辑界面
             changeCar: function (row) {
-                // console.log("row,", row)
                 this.editFormVisible1 = true;
-                // this.editForm1.id = row.id;
                  this.editForm1.driverId = row.driverInfo.driverId;
-                // if(row.carInfo.carId !=0){
-                // this.editForm1.carId = row.carInfo.carId;
-                // this.editForm1.carNumber = row.carInfo.carNumber;
-                // this.editForm1.carType = row.carInfo.carType;
-                // this.editForm1.carSeat = row.carInfo.carSeat;
-				// }
-				// else
-				// {
-				this.editForm1.id = row.id;
-                    this.editForm1.carId = '';
-                    this.editForm1.carNumber = '';
-                    this.editForm1.carType = '';
-                    this.editForm1.carSeat ='';
-				// }
-                this.carDriverIdADriverName = '';
-                this.carDriverIdBDriverName = '';
-                this.carForm.carNumber ='';
+                 this.editForm1.driverName = row.driverInfo.driverName;
+                 this.editForm1.id = row.id;
+				 this.editForm1.carId = '';
+				 this.editForm1.carNumber = '';
+				 this.editForm1.carType = '';
+				 this.editForm1.carSeat ='';
+                 this.carDriverIdADriverName = '';
+                 this.carDriverIdBDriverName = '';
+                 this.carForm.carNumber ='';
             },
             editSubmit1: function () {
                 var _this = this;
@@ -602,6 +593,14 @@
                             type: 'error'
                         });
 					}
+					else if(this.carDriverIdADriverName == this.editForm1.driverName ||this.carDriverIdBDriverName == this.editForm1.driverName)
+                    {
+                        _this.$notify({
+                            title: '失败',
+                            message: '车辆信息相同，请选择新车！',
+                            type: 'error'
+                        });
+                    }
                     else{
                     if (valid) {
                         _this.$confirm('确认换车吗？', '提示', {}).then(() => {

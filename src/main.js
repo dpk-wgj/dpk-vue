@@ -12,10 +12,6 @@ import Login from './pages/Login.vue'
 import Home from './pages/Home.vue'
 import Main from './pages/Main.vue'
 import LogInfo from './pages/LogInfo/LogInfo.vue'
-// import Form from './pages/nav1/Form.vue'
-// import user from './pages/nav1/user.vue'
-// import Page4 from './pages/nav2/Page4.vue'
-// import Page5 from './pages/nav2/Page5.vue'
 import DriverInfo from './pages/DriverInfo/driver.vue'
 import CarLocation from './pages/CarLocationInfo/CarLocation/index.vue'
 import CarTrack from './pages/CarLocationInfo/CarTrack/index.vue'
@@ -31,7 +27,7 @@ import index from './pages/charts/index.vue'
 
 
 // start mock
-import Mock from './mock';
+//import Mock from './mock';
 // Mock.bootstrap();
 import AMap from 'vue-amap'
 Vue.use(AMap)
@@ -128,7 +124,7 @@ const routes = [
     children: [
       { path: '/echart', component: index, name: 'index' },
         { path: '/echartsMonth', component: echartsMonth, name: '月份统计报表' },
-        { path: '/echartsYear', component: echartsYear, name: '年份统计报表' }
+        // { path: '/echartsYear', component: echartsYear, name: '年份统计报表' }
     ]
   }
 ]

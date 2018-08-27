@@ -2,7 +2,7 @@ import Mock from 'mockjs';
 const LoginUsers = [
   {
     id: 1,
-    username: 'admin',
+    username: 'zhoulin',
     password: '123456',
     avatar: '',
     name: '张某某'

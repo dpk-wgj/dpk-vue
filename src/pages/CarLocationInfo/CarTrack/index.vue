@@ -138,6 +138,7 @@ export default {
                         pathArr = []
                         let a = orderList[i].locationInfo
                         let locArr =  a.split("-") // ["111.22,22.11","111.22,22.11"]形式
+                        console.log(locArr)
                         for(let loc of locArr){
                             let splitedLoc = loc.split(",")//["111.22","22.11"]形式
                             splitedLoc[0] = parseFloat(splitedLoc[0])

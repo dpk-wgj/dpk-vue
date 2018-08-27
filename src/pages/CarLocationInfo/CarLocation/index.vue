@@ -42,6 +42,8 @@ export default {
             zoom: 15,
             center: [121.5273285, 31.21515044],
             carLocList: [],
+            core:[],
+            location2:[],
             carMarkers: [
                 // position: [121.5273285, 31.21515044],
                 // events: {
@@ -80,28 +82,92 @@ export default {
         
     },
     methods: {
-        getListIng() {
-            // // 这里是一个http的异步请求
-            // if (  getUrlModule() === 'carManage' ) {
-            //     let _this = this;
-            //     this.timeOut = setTimeout(() => {
-            //         _this.getListIng();
+        getListIng: function () {
             getTrafficSituation().then((res) => {
-                if(res.result!= '' ){
-                    console.log(res.result) ;
-                    // this.listLoading = false;
-                    // NProgress.done();
+                this.core = res.result.cores;
+                console.log(this.core);
+                if (this.core.length > 0 && this.core.length<100 ) {
                     this.$notify.info({
-                        title: '车辆聚集警告',
-                        message: 'xxxx位置车辆聚集，发出警告！！！',
+                        title: '车辆聚集黄色警告',
+                        message: '警告！有超过50辆上岗车辆聚集！！！',
                         duration: 0,
                         type: 'warning'
                     });
+                    let location1 = this.core[0];
+                    this.location2[0] = parseFloat(location1[0])
+                    this.location2[1] = parseFloat(location1[1])
+                    console.log(   this.location2[0]);
+                    console.log(   this.location2[1]);
+                    let light = {
+                        position:   this.location2,
+                        icon: '/static/一.png',
+                        events: {
+                            click: () => {
+                                // for(let carMarker of this.carMarkers)
+                                // {
+                                //     carMarker.mywindow.visible = false
+                                // }
+                                light.mywindow.visible = true
+
+                                console.log(light.mywindow.visible, "hhahahah")
+                            }
+                        },
+                        mywindow: {
+                            position:  this.location2,
+                            content: `<h4>聚集黄灯警告</h4>`,
+                            visible: false,
+                            events: {
+                                // close () {
+                                //     this.mywindow.visible = false
+                                // }
+                            }
+                        }
+                    };
+                    this.carMarkers.push(light);
+                    this.center = this.location2
+                }
+                else if (this.core.length >= 100) {
+                    this.$notify.info({
+                        title: '车辆聚集红色警告',
+                        message: '警告！有超过100辆上岗车辆聚集！！！',
+                        duration: 0,
+                        type: 'warning'
+                    });
+                    let location1 = this.core[0];
+                    this.location2[0] = parseFloat(location1[0])
+                    this.location2[1] = parseFloat(location1[1])
+                    console.log(   this.location2[0]);
+                    console.log(   this.location2[1]);
+                    let light = {
+                        position:   this.location2,
+                        icon: '/static/二.png',
+                        events: {
+                            click: () => {
+                                // for(let carMarker of this.carMarkers)
+                                // {
+                                //     carMarker.mywindow.visible = false
+                                // }
+                                light.mywindow.visible = true
+
+                                console.log(light.mywindow.visible, "hhahahah")
+                            }
+                        },
+                        mywindow: {
+                            position:  this.location2,
+                            content: `<h4>聚集红灯警告</h4>`,
+                            visible: false,
+                            events: {
+                                // close () {
+                                //     this.mywindow.visible = false
+                                // }
+                            }
+                        }
+                    };
+                    this.carMarkers.push(light);
+                    this.center = this.location2
                 }
             });
-            //         }, 5000);
-            //     } else {
-            //         this.timeOut = '';
+
         },
 
         addMarker(item) {
@@ -147,14 +213,25 @@ export default {
             getCarInfoByCarNumber(param).then(res => {
                 if (res.status === 1) {
                     console.log(res.result)
-                    for (let item of this.carLocList) {
-                        if (item.carInfo.carId === res.result.carInfo.carId) {
-                            let location = item.driverInfo.driverLocation.split(", ")
-                            location[0] = parseFloat(location[0])
-                            location[1] = parseFloat(location[1])
-                            this.center = location
+                    if(res.result.driverInfo != null) {
+                        for (let item of this.carLocList) {
+                            if (item.carInfo.carId === res.result.carInfo.carId) {
+                                let location = item.driverInfo.driverLocation.split(",")
+                                location[0] = parseFloat(location[0])
+                                location[1] = parseFloat(location[1])
+                                this.center = location
+                            }
                         }
                     }
+                    else
+                    {
+                        this.$notify({
+                            title: '失败',
+                            message: `未查询到车牌号为 [${this.carNumber}]的司机上岗`,
+                            type: 'error'
+                        });
+                    }
+
                 } else {
                     this.$notify({
                         title: '失败',
@@ -167,9 +244,9 @@ export default {
         },
     open11(){
         getAllCarLocation().then(res => {
-            console.log("!!!")
             if(res.status === 1){
                 this.carLocList = res.result
+                console.log(res.result)
                 for(let item of res.result){
                     // let location = res.result[i].driverLocation.split(", ")
                     // location[0] = parseFloat(location[0])
@@ -199,13 +276,15 @@ export default {
     },
     mounted() {
         this.open11();
+        this.getListIng();
+        setInterval(this.getListIng,1000*60*5);
         setInterval(this.open11,1000*60);//一分钟刷新一次车辆位置
-        setInterval(this.getListIng,1000*60*15);//s*1000//15分钟去获取一次 车辆聚集情况
+        // setInterval(this.getListIng,1000*60*15);//s*1000//15分钟去获取一次 车辆聚集情况
 
     }
     
 }
-</script>
+  </script>
 <style>
   .amap-page-container {
     height: 600px;

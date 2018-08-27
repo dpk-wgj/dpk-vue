@@ -13,17 +13,17 @@ axios.interceptors.request.use(
        return Promise.reject(err);
  });
  
-export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
-
-export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
-
-export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
-
-export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }); };
-
-export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
-
-export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
+// export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
+//
+// export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
+//
+// export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
+//
+// export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }); };
+//
+// export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
+//
+// export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
 
 
 // 管理员
@@ -40,7 +40,7 @@ export const addAdminInfo = params => { return axios.post(`/admin/addAdminInfo`,
 export const updateAdminInfo = params => { return axios.post(`/admin/updateAdminInfo`, params).then(res => res.data); };
 
 export const adminLogin = params => { 
-    return axios.post(`/public/driver/login`, params).then(res => {
+    return axios.post(`/public/admin/login`, params).then(res => {
         let token = res.headers.refresh
         window.localStorage.setItem('token',token);
         // window.localStorage.setItem('user',JSON.stringify(res.data.result))
