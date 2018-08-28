@@ -23,11 +23,11 @@
 					  border>
 				<el-table-column type="index" width="60" align="center" >
 				</el-table-column>
-				<el-table-column prop="adminInfo.userId" label="用户编号"  sortable align="center" >
+				<el-table-column prop="adminInfo.userId" label="序号"  sortable align="center" >
 				</el-table-column>
-				<el-table-column prop="adminInfo.username" label="用户姓名"  align="center" >
+				<el-table-column prop="adminInfo.username" label="姓名"  align="center" >
 				</el-table-column>
-				<el-table-column prop="adminInfo.remark" label="用户备注"  align="center" >
+				<el-table-column prop="adminInfo.remark" label="备注"  align="center" >
 				</el-table-column>
 				<el-table-column prop="adminGroup.groupName" label="用户组名" align="center" >
 				</el-table-column>

@@ -54,8 +54,13 @@
         adminLogin(params).then(res => {
           if(res.data.status === 1){
             this.$router.push({ path: '/' });
-
           }
+          else
+              this.$notify.info({
+                  title: '登录提示',
+                  message:  '用户名或者密码错误，请重新输入！',
+                  duration: 0
+              });
         })
         // var _this = this;
         // this.$refs.ruleForm2.validate((valid) => {

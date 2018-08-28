@@ -246,24 +246,30 @@
                     center: true
                 }).then(() => {
                     let param = {
-
                             complaintId: row.complaintId,
                             complaintStatus:row.complaintStatus,
-
                     };
                     console.log(param)
-                    updateComplaintInfoByComplaintId(param)
-                        .then((response) => {
+                    updateComplaintInfoByComplaintId(param).then((response) => {
+                        if (response.status === 1) {
                             this.getComplaintInfoList();
                             this.$message({
                                 type: 'success',
                                 message: '受理成功'
                             });
-                        }).catch((error) => {
+                        }
+                    else
+                        {
+                            this.$message({
+                                type: 'error',
+                                message: '受理失败，'+response.result
+                            });
+						}
+                }).catch((response) => {
                         this.loading = false;
                         this.$notify.error({
                             title: '错误',
-                            message: error.data.message,
+                            message: response.result,
                             duration: 2000
                         });
                     })

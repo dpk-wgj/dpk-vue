@@ -116,9 +116,9 @@
 				<el-form-item label="身份证"  prop="driverIdentity">
 					<el-input  v-model="editForm.driverIdentity"></el-input>
 				</el-form-item>
-				<el-form-item label="驾驶证"  prop="driverLicence">
-					<el-input  v-model="editForm.driverLicence"></el-input>
-				</el-form-item>
+				<!--<el-form-item label="驾驶证"  prop="driverLicence">-->
+					<!--<el-input  v-model="editForm.driverLicence"></el-input>-->
+				<!--</el-form-item>-->
 				<el-form-item label="信誉积分"  prop="driverLevelStar">
 				<el-input v-model="editForm.driverLevelStar"></el-input>
 			</el-form-item>
@@ -556,9 +556,9 @@
                 this.editForm.driverId = row.driverInfo.driverId;
                 this.editForm.driverName = row.driverInfo.driverName;
                 this.editForm.driverPhoneNumber = row.driverInfo.driverPhoneNumber;
-                this.editForm.driverWxId = row.driverInfo.driverWxId;
+                //this.editForm.driverWxId = row.driverInfo.driverWxId;
                 this.editForm.driverIdentity = row.driverInfo.driverIdentity;
-                this.editForm.driverLicence = row.driverInfo.driverLicence;
+                //this.editForm.driverLicence = row.driverInfo.driverLicence;
                 this.editForm.driverLevelStar = row.driverInfo.driverLevelStar;
             },
             //显示换车编辑界面
