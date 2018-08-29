@@ -1,6 +1,5 @@
 <template>
 	<section>
-
 		<el-col :span="30" class="toolbar" style="float:left">
 			<el-form :inline="true" :model="filters">
                 <el-form-item  style="float:right">
@@ -295,14 +294,21 @@
                     let fd = new FormData()
                     fd.append('file', file)
                     importExcel(fd).then((res) => {
+                        if (res.status === 1) {
                         this.$notify({
                             title: '成功',
                             message: '导入司机信息成功',
                             type: 'success'
                         });
                         this.getDriver();
-                    }, (res) => {
-                        console.log(res)
+                        }
+                        else
+                        {
+                            this.$message({
+                                type: 'error',
+                                message: '导入失败，'+res.result
+                            });
+                        }
                     });
                 }
                 return false;
@@ -435,17 +441,22 @@
                     this.$message.error(error.data.message);
                     this.$notify({
                         title: '失败',
-                        message: '导出信息表失败',
+                        message: '导出信息表失败！',
                         type: 'error'
                     });
                     NProgress.done();
                 })
-					});
+					}).catch(() => {
+                    NProgress.done();
+                    this.$notify({
+                        title: '失败',
+                        message: '导出操作取消！',
+                        type: 'error'
+                    });
+                });
             },
             // //删除
             handleDel: function (row) {
-                //console.log(row);
-                // console.log(row.driverInfo.driverId);
                 var _this = this;
                 this.$confirm('确认删除该司机信息吗?', '提示', {
                     type: 'warning'
@@ -465,10 +476,24 @@
                             });
                             _this.getDriver();
                         }
+                        else
+                        {
+                            _this.listLoading = false;
+                            NProgress.done();
+                            this.$message({
+                                type: 'error',
+                                message: '删除失败，'+res.result
+                            });
+                        }
                     });
-
                 }).catch(() => {
-
+                    _this.listLoading = false;
+                    NProgress.done();
+                    _this.$notify({
+                        title: '失败',
+                        message: '删除操作取消！',
+                        type: 'error'
+                    });
                 });
             },
             getCarOffA: function () {
@@ -484,9 +509,7 @@
                                     carId: _this.editForm1.carId
                                 };
                                 getCarOff(param).then((res) => {
-                                    // console.log("!!!", res)
                                     if (res.status === 1) {
-                                        console.log("!!!")
                                         _this.editLoading1 = false;
                                         this.carDriverIdADriverName=''
                                         NProgress.done();
@@ -497,8 +520,25 @@
                                             type: 'success'
                                         });
                                     }
+                                    else
+                                    {
+                                        _this.editLoading1 = false;
+                                        NProgress.done();
+                                        this.$message({
+                                            type: 'error',
+                                            message: '解绑失败，'+res.result
+                                        });
+                                    }
                                 });
-                            });
+                            }).catch((res) => {
+                                _this.editLoading1 = false;
+                                NProgress.done();
+                                _this.$notify({
+                                    title: '失败',
+                                    message: '解绑操作取消！',
+                                    type: 'error'
+                                });
+							});
                         }
                         else {
                             _this.$notify({
@@ -522,9 +562,7 @@
                                 carId: _this.editForm1.carId
                             };
                             getCarOff(param).then((res) => {
-                                // console.log("!!!", res)
                                 if (res.status === 1) {
-                                      //    this.carDriverIdADriverName='';
                                     this.carDriverIdBDriverName='';
                                     _this.editLoading1 = false;
                                     NProgress.done();
@@ -535,6 +573,23 @@
                                         type: 'success'
                                     });
                                 }
+                                else
+                                {
+                                    _this.editLoading1 = false;
+                                    NProgress.done();
+                                    this.$message({
+                                        type: 'error',
+                                        message: '解绑失败，'+res.result
+                                    });
+                                }
+                            });
+                        }).catch((res) => {
+                            _this.editLoading1 = false;
+                            NProgress.done();
+                            _this.$notify({
+                                title: '失败',
+                                message: '解绑操作取消！',
+                                type: 'error'
                             });
                         });
                     }
@@ -549,7 +604,6 @@
             },
             //显示司机信息编辑界面
             handleEdit: function (row) {
-                // console.log("row,", row)
                 this.editFormVisible = true;
                 this.editFormTtile = '编辑';
                 this.editForm.id = row.id;
@@ -612,7 +666,6 @@
                                 carId: _this.editForm1.carId
                             };
                             changCar(param).then((res) => {
-                                // console.log("!!!", res)
                                 if (res.status === 1) {
                                     _this.editLoading1 = false;
                                     NProgress.done();
@@ -624,25 +677,29 @@
                                     });
                                     this.carForm.carNumber = '';
                                     _this.carDriverIdADriverName='';
-										_this.carDriverIdBDriverName='';
+									_this.carDriverIdBDriverName='';
                                     _this.editFormVisible1 = false;
                                     _this.getDriver();
                                 }
+                                else
+                                {
+                                    _this.editLoading1 = false;
+                                    NProgress.done();
+                                    this.$message({
+                                        type: 'error',
+                                        message: '换车失败，'+res.result
+                                    });
+                                }
                             });
-                        })
-							// .catch((error) => {
-                        //     this.carForm.carNumber='';
-                        //     this.carDriverIdADriverName='';
-                        //     this.driverIdA=0;
-                        //     this.driverIdB=0;
-                        //     this.carDriverIdBDriverName='';
-                        //     this.loading = false;
-                        //     _this.$notify({
-                        //         title: '失败',
-                        //         message: '换车操作取消！',
-                        //         type: 'error'
-                        //     });
-                        // })
+                        }).catch((res) => {
+                            _this.editLoading1 = false;
+                            NProgress.done();
+                            _this.$notify({
+                                title: '失败',
+                                message: '换车操作取消！',
+                                type: 'error'
+                            });
+                        });
                         }
 					}
                 });
@@ -652,17 +709,16 @@
                 _this.$refs.editForm.validate((valid) => {
                     if (valid) {
                         if( _this.editForm.driverId == '' ||_this.editForm.driverName == '' ||
-							_this.editForm.driverWxId == '' ||_this.editForm.driverPhoneNumber == '' ||
-							_this.editForm.driverIdentity == '' ||_this.editForm.driverLicence == '' ||_this.editForm.driverLevelStar == ''){
+							_this.editForm.driverPhoneNumber == '' ||
+							_this.editForm.driverIdentity == ''  ||_this.editForm.driverLevelStar == ''){
                             _this.$notify({
                                 title: '失败',
                                 message: '司机信息为空，编辑司机信息失败！！',
                                 type: 'error'
                             });
-
 						}
 						else{
-                        _this.$confirm('确认修改该司机的信息吗？', '提示', {}).then(() => {
+                            _this.$confirm('确认修改该司机的信息吗？', '提示', {}).then(() => {
                             _this.editLoading = true;
                             NProgress.start();
                             _this.btnEditText = '提交中';
@@ -670,14 +726,13 @@
                             let param = {
                                 driverId: _this.editForm.driverId,
                                 driverName: _this.editForm.driverName,
-                                driverWxId: _this.editForm.driverWxId,
+                              // driverWxId: _this.editForm.driverWxId,
                                 driverPhoneNumber: _this.editForm.driverPhoneNumber,
                                 driverIdentity: _this.editForm.driverIdentity,
-                                driverLicence: _this.editForm.driverLicence,
+                               // driverLicence: _this.editForm.driverLicence,
                                 driverLevelStar: _this.editForm.driverLevelStar,
                             };
                             updateDriverInfoByDriverId(param).then((res) => {
-                                // console.log("!!!", res)
                                 if (res.status === 1) {
                                     _this.editLoading = false;
                                     NProgress.done();
@@ -690,6 +745,24 @@
                                     _this.editFormVisible = false;
                                     _this.getDriver();
                                 }
+                                else
+                                {
+                                    _this.btnEditText = '提 交';
+                                    _this.editLoading = false;
+                                    NProgress.done();
+                                    this.$message({
+                                        type: 'error',
+                                        message: '编辑失败，'+res.result
+                                    });
+                                }
+                            });
+                        }).catch((res) => {
+                            _this.editLoading= false;
+                            NProgress.done();
+                            _this.$notify({
+                                title: '失败',
+                                message: '编辑操作取消！',
+                                type: 'error'
                             });
                         });
                     }}

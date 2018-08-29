@@ -39,8 +39,11 @@ NProgress.configure({ showSpinner: false });
 
 
 const routes = [
+    { path: '/', redirect: '/login' ,   hidden: true//不显示在导航中
+    },
   {
     path: '/login',
+
     component: Login,
     hidden: true//不显示在导航中
   },
@@ -96,7 +99,7 @@ const routes = [
         //leaf: true,//只有一个节点
         children: [
             { path: '/adminInfo', component: AdminInfo, name: '人员管理' },
-            { path: '/adminGroup', component: AdminGroup, name: '分组管理' }
+            // { path: '/adminGroup', component: AdminGroup, name: '分组管理' }
         ]
     },
 

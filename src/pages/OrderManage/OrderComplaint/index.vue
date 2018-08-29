@@ -249,7 +249,6 @@
                             complaintId: row.complaintId,
                             complaintStatus:row.complaintStatus,
                     };
-                    console.log(param)
                     updateComplaintInfoByComplaintId(param).then((response) => {
                         if (response.status === 1) {
                             this.getComplaintInfoList();

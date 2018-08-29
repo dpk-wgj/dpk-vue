@@ -41,11 +41,16 @@ export const updateAdminInfo = params => { return axios.post(`/admin/updateAdmin
 
 export const adminLogin = params => { 
     return axios.post(`/public/admin/login`, params).then(res => {
-        let token = res.headers.refresh
+        if(res.data.status == 1){
+            let token = res.headers.refresh
         window.localStorage.setItem('token',token);
         // window.localStorage.setItem('user',JSON.stringify(res.data.result))
         window.localStorage.setItem('user',res.data.result.userId)
         return res
+        }
+        else
+            return null;
+
     }); 
 };
 

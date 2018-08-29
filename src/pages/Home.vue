@@ -103,8 +103,9 @@
 		},
 		mounted() {
 			if(!window.localStorage.getItem("token")){
-                  this.$router.push({ path: '/order/complaint' });
+                  this.$router.push({ path: '/login' });
 			}
+			else
             this.$router.push('/order/complaint');
 		},
 		methods: {
