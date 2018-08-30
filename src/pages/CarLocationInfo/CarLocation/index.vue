@@ -86,7 +86,7 @@ export default {
             getTrafficSituation().then((res) => {
                 this.core = res.result.cores;
                 console.log(this.core);
-                if (this.core.length > 0 && this.core.length<100 ) {
+                if (this.core.length > 50 && this.core.length<100 ) {
                     this.$notify.info({
                         title: '车辆聚集黄色警告',
                         message: '警告！有超过50辆上岗车辆聚集！！！',
