@@ -29,8 +29,8 @@
                 <el-table-column prop="orderInfo.endTime" label="订单结束时间"   align="center"  :formatter="formatTime1" width="200px" sortable>
                 </el-table-column>
 				<el-table-column label="乘客信息" align="center">
-					<el-table-column prop="passenger.passengerWxId" label="微信号" align="center" >
-					</el-table-column>
+					<!--<el-table-column prop="passenger.passengerWxId" label="微信号" align="center" >-->
+					<!--</el-table-column>-->
 					<el-table-column prop="passenger.passengerPhoneNumber" label="手机号" align="center" >
 					</el-table-column>
 				</el-table-column>

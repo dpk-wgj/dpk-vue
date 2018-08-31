@@ -188,9 +188,25 @@
 							});
 							_this.getCars();
 						}
+                        else
+                        {
+                            _this.listLoading = false;
+                            NProgress.done();
+                            this.$message({
+                                type: 'error',
+                                message: '删除失败，'+res.result
+                            });
+                        }
 					});
 
 				}).catch(() => {
+                    _this.listLoading = false;
+                    NProgress.done();
+                    _this.$notify({
+                        title: '失败',
+                        message: '删除操作取消！',
+                        type: 'error'
+                    });
 
 				});
 			},
@@ -255,7 +271,6 @@
 									carSeat: _this.editForm.carSeat
 								};
 								updateCarInfoByCarId(param).then((res) => {
-									console.log("!!!",res)
 									if(res.status === 1){
 										_this.editLoading = false;
 										NProgress.done();
@@ -268,11 +283,29 @@
 										_this.editFormVisible = false;
 										_this.getCars();
 									}
+                                    else
+                                    {
+                                        _this.btnEditText = '提 交';
+                                        _this.editLoading = false;
+                                        NProgress.done();
+                                        this.$message({
+                                            type: 'error',
+                                            message: '编辑失败，'+res.result
+                                        });
+                                    }
 								});
 
 							}
 
-						});}
+						}).catch((res) => {
+                            _this.editLoading= false;
+                            NProgress.done();
+                            _this.$notify({
+                                title: '失败',
+                                message: '编辑操作取消！',
+                                type: 'error'
+                            });
+                        });}
 
 					}
 				});

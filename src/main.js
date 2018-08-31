@@ -1,4 +1,3 @@
-import babelpolyfill from 'babel-polyfill'
 import Vue from 'vue'
 import App from './App'
 import ElementUI from 'element-ui'
@@ -10,7 +9,6 @@ import NProgress from 'nprogress'//页面顶部进度条
 import 'nprogress/nprogress.css'
 import Login from './pages/Login.vue'
 import Home from './pages/Home.vue'
-import Main from './pages/Main.vue'
 import LogInfo from './pages/LogInfo/LogInfo.vue'
 import DriverInfo from './pages/DriverInfo/driver.vue'
 import CarLocation from './pages/CarLocationInfo/CarLocation/index.vue'
@@ -25,10 +23,6 @@ import echartsYear from './pages/charts/echartsYear.vue'
 import echartsMonth from './pages/charts/echartsMonth.vue'
 import index from './pages/charts/index.vue'
 
-
-// start mock
-//import Mock from './mock';
-// Mock.bootstrap();
 import AMap from 'vue-amap'
 Vue.use(AMap)
 AMap.initAMapApiLoader({
@@ -45,8 +39,11 @@ NProgress.configure({ showSpinner: false });
 
 
 const routes = [
+    { path: '/', redirect: '/login' ,   hidden: true//不显示在导航中
+    },
   {
     path: '/login',
+
     component: Login,
     hidden: true//不显示在导航中
   },
@@ -102,7 +99,7 @@ const routes = [
         //leaf: true,//只有一个节点
         children: [
             { path: '/adminInfo', component: AdminInfo, name: '人员管理' },
-            { path: '/adminGroup', component: AdminGroup, name: '分组管理' }
+            // { path: '/adminGroup', component: AdminGroup, name: '分组管理' }
         ]
     },
 
@@ -122,7 +119,7 @@ const routes = [
     name: '服务报表',
     iconCls: 'fa fa-bar-chart',
     children: [
-      { path: '/echart', component: index, name: 'index' },
+     // { path: '/echart', component: index, name: 'index' },
         { path: '/echartsMonth', component: echartsMonth, name: '月份统计报表' },
         // { path: '/echartsYear', component: echartsYear, name: '年份统计报表' }
     ]

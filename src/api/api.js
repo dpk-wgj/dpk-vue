@@ -41,11 +41,16 @@ export const updateAdminInfo = params => { return axios.post(`/admin/updateAdmin
 
 export const adminLogin = params => { 
     return axios.post(`/public/admin/login`, params).then(res => {
-        let token = res.headers.refresh
+        if(res.data.status == 1){
+            let token = res.headers.refresh
         window.localStorage.setItem('token',token);
         // window.localStorage.setItem('user',JSON.stringify(res.data.result))
         window.localStorage.setItem('user',res.data.result.userId)
         return res
+        }
+        else
+            return null;
+
     }); 
 };
 
@@ -120,7 +125,7 @@ export const findOrderInfoByMultiCondition = param => { return axios.post(`/admi
 //
 export const getTrafficSituation = () => { return axios.post(`/admin/point/getTrafficSituation`).then(res => res.data); };
 
-export const getOrderByYear =param =>{ return axios.post(`/admin/count/getOrderByYear`, params).then(res => res.data);};
+export const getMonthOrderInfoByYear =param =>{ return axios.post(`/admin/count/getMonthOrderInfoByYear`, param).then(res => res.data);};
 export const getOrderByMonth =param =>{ return axios.post(`/admin/count/getOrderByMonth`, params).then(res => res.data);};
 export const getOrderByDriverId =param =>{ return axios.post(`/admin/count/getOrderByYear`, params).then(res => res.data);};
 export const getAllOrderNum =() =>{ return axios.get(`/admin/count/getAllOrderNum`).then(res => res.data);};

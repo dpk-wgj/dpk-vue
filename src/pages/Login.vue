@@ -28,7 +28,7 @@
         },
         rules2: {
           account: [
-            { required: true, message: '请输入账号', trigger: 'blur' },
+            { required: true, message: '请输入用户名', trigger: 'blur' },
             //{ validator: validaePass }
           ],
           checkPass: [
@@ -45,49 +45,25 @@
       },
       handleSubmit2(ev) {
         let params = {
-         // adminInfo:{
              username:this.ruleForm2.account,
              password:this.ruleForm2.checkPass
-          // }
         }
         console.log(params)
         adminLogin(params).then(res => {
-          if(res.data.status === 1){
-            this.$router.push({ path: '/' });
-
+            if(res !=null) {
+                if (res.data.status === 1) {
+                    this.$router.push({path: '/order/complaint'});
+                }
+            }
+            else {
+              this.$notify({
+                  title: '登录提示',
+                  message: '登录失败，密码或者用户名错误！',
+                  type: 'warning'
+              });
           }
         })
-        // var _this = this;
-        // this.$refs.ruleForm2.validate((valid) => {
-        //   if (valid) {
-        //     //_this.$router.replace('/table');
-        //     this.logining = true;
-        //     NProgress.start();
-        //     var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-        //     requestLogin(loginParams).then(data => {
-        //       this.logining = false;
-        //       NProgress.done();
-        //       let { msg, code, user } = data;
-        //       if (code !== 200) {
-        //         this.$notify({
-        //           title: '错误',
-        //           message: msg,
-        //           type: 'error'
-        //         });
-        //       } else {
-        //         localStorage.setItem('user', JSON.stringify(user));
-        //         if (this.$route.query.redirect) {
-        //           this.$router.push({ path: this.$route.query.redirect });
-        //         } else {
-        //           this.$router.push({ path: '/adminInfo' });
-        //         }
-        //       }
-        //     });
-        //   } else {
-        //     console.log('error submit!!');
-        //     return false;
-        //   }
-        // });
+
       }
     }
   }
